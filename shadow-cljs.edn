@@ -1,0 +1,22 @@
+{:lein true
+ :builds
+ {:app {:asset-path "/js"
+        :modules {:main {:init-fn thagomizer.core/main
+                         :preloads [devtools.preload]}}
+        :output-dir "resources/public/js"
+        :target :browser
+        :dev        {:compiler-options {:source-map      true
+                                        :closure-defines {re_frame.trace.trace_enabled?        true
+                                                          day8.re-frame.tracing.trace-enabled? true}}}
+        :devtools   {:http-root "resources/public"
+                     :http-port 8280
+                     :preloads  [devtools.preload
+                                 day8.re-frame-10x.preload]}
+        :release    {:compiler-options {:source-map    false
+                                                :optimizations :advanced
+                                                :infer-externs :auto}}}}
+ :dependencies [[reagent "0.8.1"]
+                [devcards "0.2.6"]]
+ :dev-http {3000 "resources/public"}
+ :nrepl {:port 3333}
+ :source-paths ["src/cljs"]}

@@ -127,3 +127,14 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+.DS_Store
+node_modules
+public/js
+out
+.shadow-cljs
+.nrepl-port
+.clj-kondo/
+yarn-error.log
+report.html
+.zprintrc
