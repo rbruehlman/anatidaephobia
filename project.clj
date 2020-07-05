@@ -24,7 +24,7 @@
   :min-lein-version "2.5.3"
   :source-paths ["src/clj" "src/cljs"]
   :clean-targets ^{:protect false} ["resources/public/js" "target"]
-  :main thagomizer.core
+  :main thagomizer.server
   :shell {:commands {"open" {:windows ["cmd" "/c" "start"]
                              :macosx  "open"
                              :linux   "xdg-open"}}}
@@ -34,5 +34,5 @@
                             ["run" "-m" "shadow.cljs.devtools.cli" "release" "app"]]}
   :profiles {:dev {:dependencies [[binaryage/devtools "1.0.0"]
                                   [day8.re-frame/re-frame-10x "0.6.0"]]
-                   :source-paths ["frontend-dev"]}
+                   :source-paths ["dev"]}
              :prod {}})

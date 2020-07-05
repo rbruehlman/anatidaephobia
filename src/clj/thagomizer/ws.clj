@@ -25,6 +25,6 @@
   )
 
 (add-watch connected-uids :connected-uids
-           (fn [_ _ old new]
-             (when (not= old new)
-               (infof "Connected uids change: %s" new))))
+    (fn [_ _ old new]
+      (when (not= old new)
+        (infof "Connected uids change: %s" new))))

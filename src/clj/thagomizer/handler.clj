@@ -4,11 +4,8 @@
    [ring.middleware.defaults]
    [taoensso.timbre :as timbre :refer (debugf)]
    [hiccup.core        :as hiccup]
-   [thagomizer.server :as server]
+   [thagomizer.ws :as ws]
    [thagomizer.utils :as utils]))
-
-
-(defonce router_ (atom nil))
 
 (defn landing-pg-handler [ring-req]
   (hiccup/html
@@ -42,11 +39,11 @@
       (?reply-fn {:umatched-event-as-echoed-from-from-server event}))))
 
 (defn publish [event-msg]
-  (doseq [uid (:any @server/connected-uids)]
+  (doseq [uid (:any @ws/connected-uids)]
     (let [to-publish {:uid uid
                       :timestamp utils/now-time
                       :data (:?data event-msg)}]
-    (server/chsk-send! uid [:thagomizer/publish to-publish]))))
+    (ws/chsk-send! uid [:thagomizer/publish to-publish]))))
 
 (defmethod -event-msg-handler :thagomizer/publish
   [ev-msg] (publish ev-msg))
