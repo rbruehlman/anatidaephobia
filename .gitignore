@@ -138,3 +138,7 @@ out
 yarn-error.log
 report.html
 .zprintrc
+
+# lein
+.lein-repl-history
+resources/public/js/cljs-runtime/

@@ -3,7 +3,8 @@
    [ring.middleware.defaults]))
 
 (defn ip-address [ring-req]
-  (:remote-addr ring-req))
+  ;;remote-addr
+  (:client-id ring-req))
 
 (defn now-time []
   (let [now (java.util.Date.)

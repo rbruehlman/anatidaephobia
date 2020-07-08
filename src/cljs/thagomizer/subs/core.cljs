@@ -11,3 +11,8 @@
  ::newest-message
  (fn [db]
    (:newest-message db)))
+
+(rf/reg-sub
+ ::typing-status
+ (fn [db]
+   (get-in db [:is-typing :others])))

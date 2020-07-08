@@ -1,7 +1,7 @@
 (ns thagomizer.core
   (:require
    [reagent.dom :as rdom]
-   [re-frame.core :as re-frame]
+   [re-frame.core :as rf]
    [thagomizer.events.core :as events]
    [thagomizer.ws.client :as client]
    [thagomizer.config :as config]
@@ -22,9 +22,17 @@
           (sente/start-client-chsk-router!
            client/ch-chsk ws-events/event-msg-handler)))
 
+(defn testj []
+  [:div#flex-container
+   [components/header]
+   [:div
+    [components/typing-indicator]]
+   [:div
+    [components/text-field-field]]])
+
 (defn mount-root []
-  (re-frame/clear-subscription-cache!)
-  (rdom/render [components/text-field-field]
+  (rf/clear-subscription-cache!)
+  (rdom/render [testj]
                (.getElementById js/document "app")))
 
 (defn dev-setup
@@ -37,7 +45,7 @@
 (defn ^:export main
   "Main app init function."
   []
-  (re-frame/dispatch-sync [::events/initialize-db])
+  (rf/dispatch-sync [::events/initialize-db])
   (dev-setup)
   (stylefy/init)
   (start-router!)

@@ -1,7 +1,10 @@
 (ns thagomizer.ws.events
   (:require
+   [re-frame.core :as rf]
    [taoensso.encore :as encore :refer-macros (have)]
-   [thagomizer.ws.utils :as ws-utils]))
+   [taoensso.timbre :as timbre :refer-macros [infof  warnf]]
+   [thagomizer.ws.utils :as ws-utils]
+   [thagomizer.events.core :as events]))
 
 (defmulti -event-msg-handler
   "Multimethod to handle Sente `event-msg`s"
@@ -10,30 +13,39 @@
 
 (defn event-msg-handler
   "Wraps `-event-msg-handler` with logging, error catching, etc."
-  [{:as ev-msg :keys [id ?data event]}]
+  [{:as ev-msg}]
   (-event-msg-handler ev-msg))
 
 (defmethod -event-msg-handler
   :default ; Default/fallback case (no other matching handler)
-  [{:as ev-msg :keys [event]}]
-  (ws-utils/->output! "Unhandled event: %s" event))
+  [{:as _ev-msg :keys [event]}]
+  (warnf "Unhandled event: %s" event))
 
 (defmethod -event-msg-handler :chsk/state
-  [{:as ev-msg :keys [?data]}]
-  (let [[old-state-map new-state-map] (have vector? ?data)]
+  [{:as _ev-msg :keys [?data]}]
+  (let [[_old-state-map new-state-map] (have vector? ?data)]
     (if (:first-open? new-state-map)
-      (ws-utils/->output! "Channel socket successfully established!: %s" new-state-map)
-      (ws-utils/->output! "Channel socket state change: %s"              new-state-map))))
-
-(defmethod -event-msg-handler :chsk/recv
-  [{:as ev-msg :keys [?data]}]
-  (ws-utils/->output! "Push event from server: %s" ?data))
+      (infof "Channel socket successfully established!: %s" new-state-map)
+      (infof "Channel socket state change: %s"              new-state-map))))
 
 (defmethod -event-msg-handler :chsk/handshake
-  [{:as ev-msg :keys [?data]}]
-  (let [[?uid ?csrf-token ?handshake-data] ?data]
-    (ws-utils/->output! "Handshake: %s" ?data)))
+  [{:as _ev-msg :keys [?data]}]
+  (infof "Handshake: %s" ?data))
 
-;; TODO Add your (defmethod -event-msg-handler <event-id> [ev-msg] <body>)s here...
+(defmethod -event-msg-handler :chsk/recv
+  [{:as _ev-msg :keys [?data]}]
+  (let [[event-id {:keys [uid timestamp msg]}] ?data]
+    (cond
+    (= event-id :thagomizer/message)
+      (ws-utils/->output! msg)
+    (= event-id :thagomizer/typing-status)
+      (rf/dispatch [::events/set-typing-status uid msg])
+    :else (ws-utils/->output! "done fucked up"))
+  ))
 
-;;;; Sente event router (our `event-msg-handler` loop)
+(defmethod -event-msg-handler :thagomizer/message
+  [{:as _ev-msg :keys [?data]}]
+  (ws-utils/->output! "Message: %s" ?data))
+
+(defn typing-status-handler [?data]
+  (ws-utils/->output! "Push event from server: %s" ?data))

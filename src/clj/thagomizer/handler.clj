@@ -3,21 +3,24 @@
    [ring.middleware.anti-forgery :as anti-forgery]
    [ring.middleware.defaults]
    [taoensso.timbre :as timbre :refer (debugf)]
-   [hiccup.core        :as hiccup]
+   [hiccup.page :refer [html5]]
    [thagomizer.ws :as ws]
    [thagomizer.utils :as utils]))
 
 (defn landing-pg-handler [ring-req]
-  (hiccup/html
-   [:h1 "Sente reference example"]
-   (let [csrf-token
-         (force anti-forgery/*anti-forgery-token*)]
-     [:div#sente-csrf-token {:data-csrf-token csrf-token}])
-   [:p [:strong "Step 2: "] " observe std-out (for server output) and below (for client output):"]
-   [:textarea#output {:style "width: 100%; height: 200px;"}]
-   [:div#app]
-   [:script {:src "main.js"}] ; Include our cljs target
-   ))
+  (html5 {:ng-app "Thagomizer" :lang "en"}
+         [:head
+          [:title "The Thagomizer"]
+          [:link {:href "https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap"
+                  :rel "stylesheet"}]]
+         [:body
+          [:div {:class "container"}
+           (let [csrf-token
+                 (force anti-forgery/*anti-forgery-token*)]
+             [:div#sente-csrf-token {:data-csrf-token csrf-token}])
+           [:div#app]
+           [:script {:src "main.js"}]]] ; Include our cljs target
+         ))
 
 (defmulti -event-msg-handler
   "Multimethod to handle Sente `event-msg`s"
@@ -25,26 +28,43 @@
 
 (defn event-msg-handler
   "Wraps `-event-msg-handler` with logging, error catching, etc."
-  [{:as ev-msg :keys [id ?data event]}]
+  [{:as ev-msg}]
   (-event-msg-handler ev-msg))
 
 ; Default/fallback case (no other matching handler)
 (defmethod -event-msg-handler
   :default
-  [{:as ev-msg :keys [event id ?data ring-req ?reply-fn send-fn]}]
-  (let [session (:session ring-req)
-        uid (:uid session)]
+  [{:as _ev-msg :keys [event ring-req ?reply-fn]}]
+  (let [session (:session ring-req)] ;; null pointer exception if not left in? ¯\_(ツ)_/¯
     (debugf "Unhandled event: %s" event)
     (when ?reply-fn
       (?reply-fn {:umatched-event-as-echoed-from-from-server event}))))
 
-(defn publish [event-msg]
-  (doseq [uid (:any @ws/connected-uids)]
+(defn- publish [event data uids]
+  (doseq [uid uids]
     (let [to-publish {:uid uid
-                      :timestamp utils/now-time
-                      :data (:?data event-msg)}]
-    (ws/chsk-send! uid [:thagomizer/publish to-publish]))))
+                      :timestamp (utils/now-time)
+                      :msg data}]
+      (ws/chsk-send! uid [event to-publish]))))
 
-(defmethod -event-msg-handler :thagomizer/publish
-  [ev-msg] (publish ev-msg))
+(defn publish-to-all [event event-msg]
+  (publish event event-msg (:any @ws/connected-uids)))
+
+(defn publish-to-others [event data ring-req]
+  (let [all           (:any           @ws/connected-uids)
+        params        (:params        ring-req)
+        client-id     (:client-id     params)
+        others        (filter #(not= % client-id) all)]
+
+    (publish event data others)))
+
+(defmethod -event-msg-handler
+  :thagomizer/typing-status
+  [{:as _ev-msg :keys [ring-req ?data]}]
+  (publish-to-others :thagomizer/typing-status ?data ring-req))
+
+(defmethod -event-msg-handler
+  :thagomizer/message
+  [{:as _ev-msg :keys [?data]}]
+  (publish-to-all :thagomizer/message ?data))
 
