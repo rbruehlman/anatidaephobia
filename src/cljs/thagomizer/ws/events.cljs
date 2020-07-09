@@ -4,7 +4,8 @@
    [taoensso.encore :as encore :refer-macros (have)]
    [taoensso.timbre :as timbre :refer-macros [infof  warnf]]
    [thagomizer.ws.utils :as ws-utils]
-   [thagomizer.events.core :as events]))
+   [thagomizer.events.typing :as typing-events]
+   [thagomizer.events.messages :as message-events]))
 
 (defmulti -event-msg-handler
   "Multimethod to handle Sente `event-msg`s"
@@ -37,9 +38,9 @@
   (let [[event-id {:keys [uid msg]}] ?data]
     (cond
     (= event-id :thagomizer/message)
-      (rf/dispatch [::events/set-latest-message (second ?data)])
+      (rf/dispatch [::message-events/set-latest-message (second ?data)])
     (= event-id :thagomizer/typing-status)
-      (rf/dispatch [::events/set-typing-status uid msg])
+      (rf/dispatch [::typing-events/set-typing-status uid msg])
     :else (ws-utils/->output! "done fucked up"))
   ))
 

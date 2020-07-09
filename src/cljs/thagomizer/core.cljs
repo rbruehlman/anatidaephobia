@@ -22,18 +22,9 @@
           (sente/start-client-chsk-router!
            client/ch-chsk ws-events/event-msg-handler)))
 
-(defn app []
-  [:div#flex-container
-   [components/header]
-   [:div
-    [components/typing-indicator]]
-   [:div
-    [components/text-field-field]]
-   [components/messages]])
-
 (defn mount-root []
   (rf/clear-subscription-cache!)
-  (rdom/render [app]
+  (rdom/render [components/app]
                (.getElementById js/document "app")))
 
 (defn dev-setup
