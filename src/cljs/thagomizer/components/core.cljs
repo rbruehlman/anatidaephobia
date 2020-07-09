@@ -1,8 +1,10 @@
 (ns thagomizer.components.core
   (:require
+   [reagent.core :as reagent]
    [re-frame.core :as rf]
    [thagomizer.events.core :as events]
    [thagomizer.subs.core :as subs]
+   [cljsjs.moment]
    [clojure.string :refer [join]]))
 
 (defn target-value [event]
@@ -16,6 +18,18 @@
   [:div {:id timestamp}
    [:span {:class "user"} uid]
    [:span {:class "text"} text]])
+
+(defn convert-to-human-time [unix-time]
+ (.format (js/moment unix-time) "MMMM Do YYYY, h:mm A"))
+
+(defn messages []
+  (let [messages @(rf/subscribe [::subs/latest-messages])]
+    [:div
+     (for [msg messages]
+       [:div {:key (:timestamp msg)}
+        [:span (:uid msg)]
+        [:span (convert-to-human-time (:timestamp msg))]
+        [:span (:msg msg)]])]))
 
 (defn handle-enter-press [e]
   (let [key-num (.-which e)
@@ -44,7 +58,7 @@
                          (rf/dispatch [::events/submit-message]))
             :style {:margin 10}}
      [:div [:textarea {:name :text-field
-                       :minlength 1
+                       :minLength 1
                        :value text-field
                        
                        :wrap "soft"

@@ -43,7 +43,7 @@
 (defn- publish [event data uids]
   (doseq [uid uids]
     (let [to-publish {:uid uid
-                      :timestamp (utils/now-time)
+                      :timestamp (utils/now-unixtime)
                       :msg data}]
       (ws/chsk-send! uid [event to-publish]))))
 

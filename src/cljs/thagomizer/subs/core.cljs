@@ -16,3 +16,8 @@
  ::typing-status
  (fn [db]
    (get-in db [:is-typing :others])))
+
+(rf/reg-sub
+ ::latest-messages
+ (fn [db]
+   (seq (:messages db))))

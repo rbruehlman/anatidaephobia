@@ -34,10 +34,10 @@
 
 (defmethod -event-msg-handler :chsk/recv
   [{:as _ev-msg :keys [?data]}]
-  (let [[event-id {:keys [uid timestamp msg]}] ?data]
+  (let [[event-id {:keys [uid msg]}] ?data]
     (cond
     (= event-id :thagomizer/message)
-      (ws-utils/->output! msg)
+      (rf/dispatch [::events/set-latest-message (second ?data)])
     (= event-id :thagomizer/typing-status)
       (rf/dispatch [::events/set-typing-status uid msg])
     :else (ws-utils/->output! "done fucked up"))
@@ -46,6 +46,3 @@
 (defmethod -event-msg-handler :thagomizer/message
   [{:as _ev-msg :keys [?data]}]
   (ws-utils/->output! "Message: %s" ?data))
-
-(defn typing-status-handler [?data]
-  (ws-utils/->output! "Push event from server: %s" ?data))
