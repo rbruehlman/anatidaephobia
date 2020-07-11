@@ -5,13 +5,19 @@
    [taoensso.timbre :as timbre :refer (debugf)]
    [hiccup.page :refer [html5]]
    [thagomizer.ws :as ws]
-   [thagomizer.utils :as utils]))
+   [thagomizer.utils :as utils]
+   [clojure.set :as set]))
 
 (defn landing-pg-handler [ring-req]
   (html5 {:ng-app "Thagomizer" :lang "en"}
          [:head
           [:title "The Thagomizer"]
+          [:meta {:charset "utf-8"}]
+          [:meta {:name "viewport"
+                  :content "width=device-width, initial-scale=1"}]
           [:link {:href "https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap"
+                  :rel "stylesheet"}]
+          [:link {:href "https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css"
                   :rel "stylesheet"}]]
          [:body
           [:div {:class "container"}
@@ -19,8 +25,7 @@
                  (force anti-forgery/*anti-forgery-token*)]
              [:div#sente-csrf-token {:data-csrf-token csrf-token}])
            [:div#app]
-           [:script {:src "main.js"}]]] ; Include our cljs target
-         ))
+           [:script {:src "main.js"}]]]))
 
 (defmulti -event-msg-handler
   "Multimethod to handle Sente `event-msg`s"
@@ -68,3 +73,11 @@
   [{:as _ev-msg :keys [?data]}]
   (publish-to-all :thagomizer/message ?data))
 
+(add-watch
+ ws/connected-uids
+ :connected-uids
+ (fn [_ _ old new]
+   (let [new-uids (set (:ws new))]
+     (cond (not= old new)
+           (publish-to-all :thagomizer/connected-uids
+                           {:uids new-uids})))))

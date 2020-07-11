@@ -10,8 +10,9 @@
 
 (rf/reg-event-fx
  ::set-latest-message
- (fn [db [_ event-data]]
-   (let [messages (:messages db)]
+ (fn [cofx [_ event-data]]
+   (let [db (:db cofx)
+         messages (:messages db)]
      {:db (if (> (count messages) 10)
             (update db :messages
                     #(conj (pop %) event-data))

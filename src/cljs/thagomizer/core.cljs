@@ -7,6 +7,7 @@
    [thagomizer.config :as config]
    [thagomizer.ws.events :as ws-events]
    [thagomizer.components.core :as components]
+   [thagomizer.components.utils :as c-utils]
    [stylefy.core :as stylefy]
    [taoensso.sente  :as sente]))
 
@@ -32,7 +33,8 @@
   []
   (when config/debug?
     (enable-console-print!)
-    (println "👩‍💻 You're in dev mode now")))
+    (println "👩‍💻 You're in dev mode now")
+    #_(println (c-utils/get-media-type))))
 
 (defn ^:export main
   "Main app init function."

@@ -5,8 +5,6 @@
    [taoensso.sente.server-adapters.http-kit :refer (get-sch-adapter)]
    [thagomizer.utils :as utils]))
 
-(reset! sente/debug-mode?_ true)
-
 ;;;; Define our Sente channel socket (chsk) server	
 (let [packer :edn
       chsk-server

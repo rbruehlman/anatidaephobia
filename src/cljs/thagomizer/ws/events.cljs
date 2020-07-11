@@ -5,7 +5,8 @@
    [taoensso.timbre :as timbre :refer-macros [infof  warnf]]
    [thagomizer.ws.utils :as ws-utils]
    [thagomizer.events.typing :as typing-events]
-   [thagomizer.events.messages :as message-events]))
+   [thagomizer.events.messages :as message-events]
+   [thagomizer.events.uids :as uid-events]))
 
 (defmulti -event-msg-handler
   "Multimethod to handle Sente `event-msg`s"
@@ -24,10 +25,9 @@
 
 (defmethod -event-msg-handler :chsk/state
   [{:as _ev-msg :keys [?data]}]
-  (let [[_old-state-map new-state-map] (have vector? ?data)]
-    (if (:first-open? new-state-map)
-      (infof "Channel socket successfully established!: %s" new-state-map)
-      (infof "Channel socket state change: %s"              new-state-map))))
+  (let [[_ new-state-map] (have vector? ?data)
+        uid (:uid new-state-map)]
+    (rf/dispatch [::uid-events/add-self-uid uid])))
 
 (defmethod -event-msg-handler :chsk/handshake
   [{:as _ev-msg :keys [?data]}]
@@ -41,7 +41,9 @@
       (rf/dispatch [::message-events/set-latest-message (second ?data)])
     (= event-id :thagomizer/typing-status)
       (rf/dispatch [::typing-events/set-typing-status uid msg])
-    :else (ws-utils/->output! "done fucked up"))
+    (= event-id :thagomizer/connected-uids)
+      (rf/dispatch [::uid-events/set-uids msg])
+    :else (ws-utils/->output! (str "Shit went sideways" event-id)))
   ))
 
 (defmethod -event-msg-handler :thagomizer/message

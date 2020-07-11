@@ -30,8 +30,7 @@
   (let [text-field @(rf/subscribe [::subs/text-field])]
     [:form {:on-submit (fn [e]
                          (.preventDefault e)
-                         (rf/dispatch [::input-events/submit-message]))
-            :style {:margin 10}}
+                         (rf/dispatch [::input-events/submit-message]))}
      [:div [:textarea {:name :text-field
                        :minLength 1
                        :value text-field
@@ -39,9 +38,10 @@
                        :wrap "soft"
                        :on-change #(on-value-change %)
                        :on-key-down #(handle-enter-press %)
-                       :style (merge {:width "40%"
-                                      :min-height "100px"
+                       :style (merge {:min-height "100px"
+                                      :width "100%"
                                       :resize "none"
                                       :font-size "16px"
-                                      :font-family "Roboto, sans-serif"}
+                                      :font-family "Roboto, sans-serif"
+                                      :display "flex"}
                                      c-utils/center-css)}]]]))
