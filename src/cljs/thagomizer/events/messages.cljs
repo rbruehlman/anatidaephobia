@@ -12,12 +12,13 @@
  ::set-latest-message
  (fn [cofx [_ event-data]]
    (let [db (:db cofx)
-         messages (:messages db)]
-     {:db (if (> (count messages) 10)
+         message-queue (:messages db)
+         new-message (:msg event-data)]
+     {:db (if (> (count message-queue) 10)
             (update db :messages
-                    #(conj (pop %) event-data))
+                    #(conj (pop %) new-message))
             (update db :messages
-                    conj event-data))
+                    conj new-message))
       :timeout {:id (:timestamp event-data)
                 :event [::remove-message]
                 :time 300000 ;; 5 minutes

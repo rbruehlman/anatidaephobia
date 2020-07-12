@@ -5,8 +5,9 @@
 (defn header []
   [:h1
    {:style (merge {:font-family "Gloria Hallelujah, cursive"
-                   :font-size "3vw"
+                   :font-size "4vmax"
                    :display "flex"
-                   :padding-bottom "50px"}
+                   :padding "20px 0 20px 0px"
+                   :text-align "center"}
                   c-utils/center-css)}
    "THE THAGOMIZER"])

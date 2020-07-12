@@ -3,13 +3,14 @@
    [ring.middleware.defaults]
    [taoensso.sente :as sente]
    [taoensso.sente.server-adapters.http-kit :refer (get-sch-adapter)]
-   [thagomizer.utils :as utils]))
+))
 
 ;;;; Define our Sente channel socket (chsk) server	
 (let [packer :edn
       chsk-server
       (sente/make-channel-socket!
-       (get-sch-adapter) {:packer packer :user-id-fn utils/ip-address})
+       (get-sch-adapter) {:packer packer
+                          :user-id-fn (fn [ring-req] (:client-id ring-req))})
       {:keys [ch-recv send-fn connected-uids
               ajax-post-fn ajax-get-or-ws-handshake-fn]}
       chsk-server]

@@ -4,9 +4,7 @@
    [ring.middleware.defaults]
    [taoensso.timbre :as timbre :refer (debugf)]
    [hiccup.page :refer [html5]]
-   [thagomizer.ws :as ws]
-   [thagomizer.utils :as utils]
-   [clojure.set :as set]))
+   [thagomizer.ws :as ws]))
 
 (defn landing-pg-handler [ring-req]
   (html5 {:ng-app "Thagomizer" :lang "en"}
@@ -48,7 +46,6 @@
 (defn- publish [event data uids]
   (doseq [uid uids]
     (let [to-publish {:uid uid
-                      :timestamp (utils/now-unixtime)
                       :msg data}]
       (ws/chsk-send! uid [event to-publish]))))
 
@@ -70,8 +67,10 @@
 
 (defmethod -event-msg-handler
   :thagomizer/message
-  [{:as _ev-msg :keys [?data]}]
-  (publish-to-all :thagomizer/message ?data))
+  [{:as _ev-msg :keys [?data uid]}]
+  (publish-to-all :thagomizer/message {:author uid
+                                       :msg ?data
+                                       :timestamp (.getTime (java.util.Date.))}))
 
 (add-watch
  ws/connected-uids

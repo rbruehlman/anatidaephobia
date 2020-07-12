@@ -8,8 +8,13 @@
 
 (defn app []
   [:div#flex-container
-   {:style (merge {:width "70%"} c-utils/center-css)}
-   [header]
+   {:style (merge {:width "70%"
+                   :flex-flow "column"
+                   :display "flex"
+                   :align-items "stretch"
+                   :height "90vh"} c-utils/center-css)}
+   [header {:style
+            {:flex "0 1 auto"}}]
    [messages]
    [:div
     [typing-indicator]]

@@ -8,7 +8,6 @@
    [compojure.core :as comp :refer (defroutes GET POST)]
    [compojure.route    :as route]))
 
-
 (defroutes ring-routes
   (GET "/" ring-req         (handler/landing-pg-handler ring-req))
   (GET "/chsk" ring-req     (ws/ring-ajax-get-or-ws-handshake ring-req))
@@ -39,7 +38,7 @@
 
 (defn start-web-server! [& [port]]
   (stop-web-server!)
-  (let [port (or port 0)                                ; 0 => Choose any available port	
+  (let [port (or port 5000)
         ring-handler (var main-ring-handler)
         [port stop-fn]
         (let [stop-fn (http-kit/run-server ring-handler {:port port})]

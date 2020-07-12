@@ -7,9 +7,8 @@
    [thagomizer.config :as config]
    [thagomizer.ws.events :as ws-events]
    [thagomizer.components.core :as components]
-   [thagomizer.components.utils :as c-utils]
-   [stylefy.core :as stylefy]
-   [taoensso.sente  :as sente]))
+   [taoensso.sente  :as sente]
+   [day8.re-frame.http-fx]))
 
 
 (defonce router_ (atom nil))
@@ -18,10 +17,10 @@
   (when-let [stop-f @router_] (stop-f)))
 
 (defn start-router! []
-  (stop-router!)
-  (reset! router_
-          (sente/start-client-chsk-router!
-           client/ch-chsk ws-events/event-msg-handler)))
+    (stop-router!)
+    (reset! router_
+            (sente/start-client-chsk-router!
+             client/ch-chsk ws-events/event-msg-handler)))
 
 (defn mount-root []
   (rf/clear-subscription-cache!)
@@ -33,14 +32,12 @@
   []
   (when config/debug?
     (enable-console-print!)
-    (println "👩‍💻 You're in dev mode now")
-    #_(println (c-utils/get-media-type))))
+    (println "👩‍💻 You're in dev mode now")))
 
 (defn ^:export main
   "Main app init function."
   []
   (rf/dispatch-sync [::events/initialize-db])
   (dev-setup)
-  (stylefy/init)
-  (start-router!)
-  (mount-root))
+  (mount-root)
+  (start-router!))

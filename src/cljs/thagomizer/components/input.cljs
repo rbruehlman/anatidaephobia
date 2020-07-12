@@ -34,7 +34,6 @@
      [:div [:textarea {:name :text-field
                        :minLength 1
                        :value text-field
-
                        :wrap "soft"
                        :on-change #(on-value-change %)
                        :on-key-down #(handle-enter-press %)
@@ -43,5 +42,6 @@
                                       :resize "none"
                                       :font-size "16px"
                                       :font-family "Roboto, sans-serif"
-                                      :display "flex"}
+                                      :display "flex"
+                                      :overflow-y "scroll"}
                                      c-utils/center-css)}]]]))

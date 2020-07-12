@@ -15,10 +15,9 @@
 (defn messages []
   (let [messages @(rf/subscribe [::subs/latest-messages])]
     [:div {:style {:font-family "Roboto, sans-serif"
-                   :margin "auto"
-                   :justify-content "center"
-                   :align-items "center"
-                   :width "100%"}}
+                   :width "100%"
+                   :flex "1 1 auto"
+                   :overflow "auto"}}
      (for [msg messages]
        [:div.rows {:key (:timestamp msg)
                    :style {:vertical-align "bottom"
@@ -30,10 +29,10 @@
           (convert-to-human-time (:timestamp msg))]
          [:span {:class "is-2"
                  :style {:font-size 12
-                         :color "red"
+                         :color (:color msg)
                          :padding-left 10
                          :text-align "right"}}
-          (:uid msg)]]
+          (:author msg)]]
         [:div.row {:class "is-8"
                    :style {:text-align "left"}}
          (:msg msg)]])]))
