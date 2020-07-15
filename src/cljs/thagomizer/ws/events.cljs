@@ -23,12 +23,6 @@
   [{:as _ev-msg :keys [event]}]
   (warnf "Unhandled event: %s" event))
 
-(defmethod -event-msg-handler :chsk/state
-  [{:as _ev-msg :keys [?data]}]
-  (let [[_ new-state-map] (have vector? ?data)
-        uid (:uid new-state-map)]
-    (rf/dispatch [::uid-events/add-self-uid uid])))
-
 (defmethod -event-msg-handler :chsk/handshake
   [{:as _ev-msg :keys [?data]}]
   (infof "Handshake: %s" ?data))

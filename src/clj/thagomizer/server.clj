@@ -6,7 +6,8 @@
    [thagomizer.handler :as handler]
    [thagomizer.ws :as ws]
    [compojure.core :as comp :refer (defroutes GET POST)]
-   [compojure.route    :as route]))
+   [compojure.route    :as route])
+  (:gen-class))
 
 (defroutes ring-routes
   (GET "/" ring-req         (handler/landing-pg-handler ring-req))
@@ -43,8 +44,9 @@
         [port stop-fn]
         (let [stop-fn (http-kit/run-server ring-handler {:port port})]
           [(:local-port (meta stop-fn)) (fn [] (stop-fn :timeout 100))])
-        uri (format "http://localhost:%s/" port)]
-
+        uri (format "http://0.0.0.0:%s/" port)]
+    (println (str "Running on "  (format "http://0.0.0.0:%s/" port))
+)
     (try
       (.browse (java.awt.Desktop/getDesktop) (java.net.URI. uri))
       (catch java.awt.HeadlessException _))

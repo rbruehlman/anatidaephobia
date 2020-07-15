@@ -1,0 +1,9 @@
+.git
+.cache
+.shadow-cljs
+.clj-kondo
+
+dev/
+env/
+node_modules/
+target/
