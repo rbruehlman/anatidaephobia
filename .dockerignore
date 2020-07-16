@@ -1,0 +1,10 @@
+.git
+.cache
+.shadow-cljs
+.clj-kondo
+.nrepl-port
+
+dev/
+env/
+node_modules/
+target/
