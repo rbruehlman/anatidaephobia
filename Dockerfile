@@ -1,18 +1,13 @@
-FROM clojure:openjdk-11-lein-buster
+FROM theasp/clojurescript-nodejs:alpine as build
+WORKDIR /app
+COPY package.json package-lock.json yarn.lock project.clj ./
 
-RUN apt-get update && -y install npm && nodejs
-
-RUN mkdir -p /usr/thagomizer/
-WORKDIR /usr/thagomizer/
-COPY project.clj .
-RUN lein deps
 RUN npm install
 
 COPY . .
 
-RUN lein prod
-RUN mv "$(lein uberjar | sed -n 's/^Created \(.*standalone\.jar\)/\1/p')" app-standalone.jar
+RUN lein uberjar && mv /app/target/thagomizer.jar ./thagomizer.jar
 
 EXPOSE 5000
 
-CMD ["java", "-jar", "app-standalone.jar"]
+CMD ["java", "-jar", "thagomizer.jar"]

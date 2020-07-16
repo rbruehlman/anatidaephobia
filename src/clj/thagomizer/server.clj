@@ -13,7 +13,7 @@
   (GET "/" ring-req         (handler/landing-pg-handler ring-req))
   (GET "/chsk" ring-req     (ws/ring-ajax-get-or-ws-handshake ring-req))
   (POST "/chsk" ring-req    (ws/ring-ajax-post ring-req))
-  (route/resources "/"      {:root "public/js"})
+  (route/resources "/"      {:root "public"})
   (route/not-found          "<h1>Page not found</h1>"))
 
 (defonce router_ (atom nil))

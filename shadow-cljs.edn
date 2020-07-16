@@ -1,9 +1,8 @@
 {:lein true
  :builds
- {:app {:asset-path "/js"
-        :modules {:main {:init-fn thagomizer.core/main
+ {:app {:modules {:main {:init-fn thagomizer.core/main
                          :preloads [devtools.preload]}}
-        :output-dir "resources/public/js"
+        :output-dir "resources/public"
         :target :browser
         :dev        {:compiler-options {:source-map      true
                                         :closure-defines {re_frame.trace.trace_enabled?        true
@@ -15,8 +14,7 @@
         :release    {:compiler-options {:source-map    false
                                                 :optimizations :advanced
                                                 :infer-externs :auto}}}}
- :dependencies [[reagent "0.8.1"]
-                [devcards "0.2.6"]]
+ :dependencies [[reagent "1.0.0-alpha2"]]
  :dev-http {3000 "resources/public"}
  :nrepl {:port 3333}
  :source-paths ["src/cljs"]}
