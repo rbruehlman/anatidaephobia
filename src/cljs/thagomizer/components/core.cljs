@@ -1,6 +1,6 @@
 (ns thagomizer.components.core
   (:require
-   [thagomizer.components.header :refer [header]]
+   [thagomizer.components.accents :refer [header, online-users]]
    [thagomizer.components.input :refer [input-text-field]]
    [thagomizer.components.messages :refer [messages]]
    [thagomizer.components.typing :refer [typing-indicator]]
@@ -19,4 +19,7 @@
    [:div
     [typing-indicator]]
    [:div
-    [input-text-field]]])
+    [input-text-field]]
+   [:div
+    [online-users]]
+   ])

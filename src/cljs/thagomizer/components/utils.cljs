@@ -4,8 +4,12 @@
 (def center-css {:margin "auto"
                  :justify-content "center"})
 
-(defn get-media-type []
-  (.-type (.-styleMedia js/window)))
+(def get-media-type (.-type (.-styleMedia js/window)))
 
-(defn cs [& args]
+(defn cs
+  "Multiple classes!"
+  [& args]
   (str/join " " (map name (filter identity args))))
+
+(defn trunc-uid [uid]
+  (first (str/split uid #"-")))
