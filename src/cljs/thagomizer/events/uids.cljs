@@ -3,21 +3,32 @@
    [re-frame.core :as rf]
    [clojure.set :as set]))
 
-(defn assign-color [uids]
+(defn assign-color
+  "Assigns color based off available colors.  If all are
+  assigned, take one of the least used."
+  [uids]
   (let [colors #{"blue" "red" "green" "orange" "purple"}
-        taken-colors (set (vals uids))
-        available-colors (set/difference colors taken-colors)]
-    (if (= (count available-colors) 0) ;; all available colors taken; start over
-      (first colors)
+        taken-colors (vals uids)
+        available-colors (set/difference colors (set taken-colors))]
+    (if (= (count available-colors) 0)
+      (first (apply min-key val (frequencies taken-colors)))
       (first available-colors))))
 
 (defn add-uid-and-color
+  "Adds a map of uid and color to the uids map"
   [db uid]
   (let [existing-uids  (:uids db)
         color (assign-color existing-uids)]
     (assoc-in db [:uids (keyword uid)] color)))
 
-(defn add-uids [db vec]
+(defn add-uids
+  "Recursively adds uids and color.
+   Why did I make this recursive again???  Hmm...  I think I needed to
+   keep track of what colors had already been used in the event multiple
+   uids needed to be added at once? (as opposed to) adding sequentially?
+   Or something?  I'm not sure I HAD to do it this way now, but whatever,
+   it works."
+  [db vec]
   (let [[uid & remaining-uids] vec]
     (if (empty? remaining-uids)
       (add-uid-and-color db uid)
@@ -26,11 +37,14 @@
           (add-uids remaining-uids)))))
 
 (defn remove-uids
+  "Remove all inactive uids"
   [db uids-to-remove]
   (let [existing-uids (:uids db)]
     (assoc db :uids
            (apply dissoc existing-uids uids-to-remove))))
 
+;; Set uids (removing and adding as necessary)
+;; I wonder if maybe I should make add/remove events when it receives an arrival/departure message from the websocket? hmm.
 (rf/reg-event-db
  ::set-uids
  (fn [db [_ msg]]

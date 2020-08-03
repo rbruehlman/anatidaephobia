@@ -5,13 +5,20 @@
    [thagomizer.subs.core :as subs]
    [thagomizer.components.utils :as c-utils]))
 
-(defn target-value [event]
+(defn target-value
+  "Extracts the value of the event fired."
+  [event]
   (.-value (.-target event)))
 
-(defn on-value-change [e]
+(defn on-value-change
+  "Sets the text field with the value submitted in the event"
+  [e]
   (rf/dispatch [::input-events/update-text-field (target-value e)]))
 
-(defn handle-enter-press [e]
+(defn handle-enter-press
+  "We want to send the message when the user hits enter, but add a 
+   paragraph when they hit shift+enter.  Otherwise, behave as normal!"
+  [e]
   (let [key-num (.-which e)
         shift   (.-shiftKey e)
         enter   13]
@@ -26,7 +33,9 @@
       :else
       "default")))
 
-(defn input-text-field []
+(defn input-text-field
+  "Component for the input text field"
+  []
   (let [text-field @(rf/subscribe [::subs/text-field])]
     [:form {:on-submit (fn [e]
                          (.preventDefault e)
