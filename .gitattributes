@@ -1,0 +1,3 @@
+*.cljs linguist-language=Clojure
+*.clj linguist-language=Clojure
+*.cljs linguist-language=Clojure
