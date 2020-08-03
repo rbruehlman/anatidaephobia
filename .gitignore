@@ -142,3 +142,4 @@ report.html
 # lein
 .lein-repl-history
 resources/public/cljs-runtime/
+resources/public/main.js
