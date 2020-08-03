@@ -72,6 +72,8 @@
                                        :msg ?data
                                        :timestamp (.getTime (java.util.Date.))}))
 
+;; when connected uids change, we want to broadcast this to listeners
+;; so that they can update their list of active users
 (add-watch
  ws/connected-uids
  :connected-uids

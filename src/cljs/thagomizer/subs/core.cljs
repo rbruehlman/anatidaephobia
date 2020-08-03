@@ -28,9 +28,15 @@
  (fn [db]
    (:uid db)))
 
+(rf/reg-sub
+ ::uids
+ (fn [db]
+   (:uids db)))
+
 (defn- get-user-color [msg uids]
   ((keyword (:author msg)) uids))
 
+;;Gets messages and assigns color to them based on author
 (rf/reg-sub
  ::latest-messages
  (fn [db]

@@ -1,7 +1,6 @@
 (ns thagomizer.ws.events
   (:require
    [re-frame.core :as rf]
-   [taoensso.encore :as encore :refer-macros (have)]
    [taoensso.timbre :as timbre :refer-macros [infof  warnf]]
    [thagomizer.ws.utils :as ws-utils]
    [thagomizer.events.typing :as typing-events]
