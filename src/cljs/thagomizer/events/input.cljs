@@ -34,3 +34,13 @@
          (ws-client/chsk-send! [:thagomizer/typing-status is-typing?] 5000) ;; why do I need this again?
          (ws-client/chsk-send! [:thagomizer/message msg] 5000)
          (rf/dispatch [::update-text-field ""]))))))
+
+(rf/reg-event-db
+ ::update-passcode-field
+  (fn [db [_ value]]
+   (assoc db :passcode value)))
+
+(rf/reg-event-db
+ ::submit-passcode
+ (fn [db]
+   (assoc db :authenticated (= "moo" (:passcode db)))))
