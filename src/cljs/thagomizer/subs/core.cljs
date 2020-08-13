@@ -46,3 +46,13 @@
             (if (nil? (get-user-color m uids))
               (utils/sleep 10)
             (assoc m :color (get-user-color m uids))))))))
+
+(rf/reg-sub
+ ::passcode
+ (fn [db]
+   (:passcode db)))
+
+(rf/reg-sub
+ ::authentication
+ (fn [db]
+   (:authenticated db)))
