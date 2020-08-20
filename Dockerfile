@@ -10,4 +10,6 @@ RUN lein uberjar && mv /app/target/thagomizer.jar ./thagomizer.jar
 
 EXPOSE 5000
 
+ENV AWS_REGION="us-east-1"
+
 CMD ["java", "-jar", "thagomizer.jar"]

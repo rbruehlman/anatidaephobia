@@ -43,9 +43,26 @@
                (rf/dispatch event))
              time)))))
 
-;;scroll down to the end of the messages :) :) :)
+;;scroll down to the end of the messages
 (rf/reg-event-fx
  ::scroll-down
  (fn [cofx]
    (let [message-list (.getElementById js/document "message-list")]
      (.scrollTo message-list 0 (.-scrollHeight message-list)))))
+
+
+;;remove messages from inactive users
+(rf/reg-event-db
+ ::remove-inactive-user-messages
+ (fn [db]
+   db
+   #_(let [uids (keys (:uids db))
+         messages (:messages db)]
+     (println (filter #(contains? uids (:uid %)) messages))
+     (assoc db :messages #queue [(vector (filter #(contains? uids (:uid %)) messages))]))))
+
+;;remove messages from inactive users
+(rf/reg-event-db
+ ::clear-messages
+ (fn [db]
+     (assoc db :messages #queue [])))

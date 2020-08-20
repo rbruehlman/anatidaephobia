@@ -2,7 +2,8 @@
   (:require
    [re-frame.core :as rf]
    [thagomizer.subs.core :as subs]
-   [thagomizer.components.utils :as c-utils]))
+   [thagomizer.components.utils :as c-utils]
+   [thagomizer.events.messages :as message-events]))
 
 (defn header []
   [:h1
@@ -28,3 +29,16 @@
                  :display "inline-block"
                  :margin "10px 3px"}
          :key (str uid "-color")}])]))
+
+
+(defn clear-button
+  "Clear messages"
+  []
+  [:button {:style {:font-size 10
+                    :border "none"
+                    ;;:background-color "white"
+                    :text-align "center"
+                    :display "inline-block"}
+            :type "button"
+            :value "Reset"
+            :onClick #((rf/dispatch [::message-events/clear-messages]))}])

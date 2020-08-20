@@ -56,3 +56,8 @@
  ::authentication
  (fn [db]
    (:authenticated db)))
+
+(rf/reg-sub
+ ::sms-status
+ (fn [db]
+   (:sms-status db)))

@@ -13,8 +13,11 @@
                  [http-kit "2.3.0"]
                  [ring "1.8.0"]
                  [com.taoensso/sente "1.15.0"]
-                 [ring/ring-defaults        "0.3.2"]
-                 [ring/ring-anti-forgery "1.3.0"]]
+                 [ring/ring-defaults "0.3.2"]
+                 [ring/ring-anti-forgery "1.3.0"]
+                 [com.cognitect.aws/api "0.8.474"]
+                 [com.cognitect.aws/sns "807.2.729.0"]
+                 [com.cognitect.aws/endpoints "1.1.11.842"]]
 
   :plugins [[lein-shell "0.5.0"]]
   :min-lein-version "2.5.3"

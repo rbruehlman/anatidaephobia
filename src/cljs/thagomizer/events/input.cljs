@@ -43,4 +43,4 @@
 (rf/reg-event-db
  ::submit-passcode
  (fn [db]
-   (assoc db :authenticated (= "moo" (:passcode db)))))
+   (assoc db :authenticated (= "m00m00" (:passcode db)))))
