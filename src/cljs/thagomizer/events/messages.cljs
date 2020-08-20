@@ -24,7 +24,7 @@
                     conj new-message))
       :timeout {:id (:timestamp event-data)
                 :event [::remove-message]
-                :time 3000 ;; 5 minutes
+                :time 300000 ;; 5 minutes
                 }})))
 
 (defonce timeouts (reagent/atom {}))

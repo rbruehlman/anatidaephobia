@@ -1,6 +1,6 @@
 (ns thagomizer.db)
 
-(def default-db {:passcode "m00m00"
+(def default-db {:passcode nil
                  :authenticated nil
                  :uid nil
                  :text-field ""
