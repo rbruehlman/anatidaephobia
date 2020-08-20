@@ -3,16 +3,17 @@
    [taoensso.sente :as sente]
    [ring.middleware.defaults]
    [org.httpkit.server :as http-kit]
-   [thagomizer.handler :as handler]
-   [thagomizer.ws :as ws]
    [compojure.core :as comp :refer (defroutes GET POST)]
-   [compojure.route    :as route])
+   [compojure.route    :as route]
+   [thagomizer.handler :as handler]
+   [thagomizer.ws :as ws])
   (:gen-class))
 
 (defroutes ring-routes
   (GET "/" ring-req         (handler/landing-pg-handler ring-req))
   (GET "/chsk" ring-req     (ws/ring-ajax-get-or-ws-handshake ring-req))
   (POST "/chsk" ring-req    (ws/ring-ajax-post ring-req))
+  (GET "/sms" ring-req      (handler/sms-handler ring-req)) ;;should be post, but antiforgery a pain
   (route/resources "/"      {:root "public"})
   (route/not-found          "<h1>Page not found</h1>"))
 

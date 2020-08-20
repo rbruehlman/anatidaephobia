@@ -4,7 +4,8 @@
    [ring.middleware.defaults]
    [taoensso.timbre :as timbre :refer (debugf)]
    [hiccup.page :refer [html5]]
-   [thagomizer.ws :as ws]))
+   [thagomizer.ws :as ws]
+   [thagomizer.sns :as sns]))
 
 (defn landing-pg-handler [ring-req]
   (html5 {:ng-app "Thagomizer" :lang "en"}
@@ -24,6 +25,10 @@
              [:div#sente-csrf-token {:data-csrf-token csrf-token}])
            [:div#app]
            [:script {:src "main.js"}]]]))
+
+(defn sms-handler [ring-req]
+  (sns/send-sms)
+)
 
 (defmulti -event-msg-handler
   "Multimethod to handle Sente `event-msg`s"
