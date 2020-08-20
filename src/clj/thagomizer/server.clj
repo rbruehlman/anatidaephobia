@@ -21,7 +21,9 @@
 
 (def main-ring-handler
   (ring.middleware.defaults/wrap-defaults
-   ring-routes ring.middleware.defaults/site-defaults))
+   ring-routes
+   ;; disabling anti-forgery because the only POST request is to submit sms
+   (assoc-in ring.middleware.defaults/site-defaults [:security :anti-forgery] false)))
 
 (defn stop-router! []
   (when-let [stop-fn @router_]

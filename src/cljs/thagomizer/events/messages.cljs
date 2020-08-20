@@ -24,7 +24,7 @@
                     conj new-message))
       :timeout {:id (:timestamp event-data)
                 :event [::remove-message]
-                :time 300000 ;; 5 minutes
+                :time 3000 ;; 5 minutes
                 }})))
 
 (defonce timeouts (reagent/atom {}))
@@ -50,16 +50,18 @@
    (let [message-list (.getElementById js/document "message-list")]
      (.scrollTo message-list 0 (.-scrollHeight message-list)))))
 
+(defn queue
+  "Make things into a queue"
+  ([coll]
+   (reduce conj #queue [] coll)))
 
 ;;remove messages from inactive users
 (rf/reg-event-db
  ::remove-inactive-user-messages
  (fn [db]
-   db
-   #_(let [uids (keys (:uids db))
+   (let [uids (keys (:uids db))
          messages (:messages db)]
-     (println (filter #(contains? uids (:uid %)) messages))
-     (assoc db :messages #queue [(vector (filter #(contains? uids (:uid %)) messages))]))))
+     (assoc db :messages (queue (filter #(contains? uids (:uid %)) messages))))))
 
 ;;remove messages from inactive users
 (rf/reg-event-db

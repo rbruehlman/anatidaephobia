@@ -9,7 +9,7 @@
      {:http-xhrio {:method :post
                    :uri "/sms"
                    :format (ajax/json-request-format)
-                   :response-format (ajax/json-response-format {:keywords? true})
+                   :response-format (ajax/text-response-format)
                    :on-success [::handle-sms-success]
                    :on-failure [::handle-sms-failure]}}))
 
@@ -20,5 +20,6 @@
 
 (rf/reg-event-fx
  ::handle-sms-failure
- (fn []
+ (fn [_ [_ response]]
+   (println response)
    (js/alert "Houston, we have a problem...")))

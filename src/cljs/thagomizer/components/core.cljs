@@ -17,7 +17,7 @@
          [input-text-field]]
         [:div
          [online-users]]
-        #_[:div
+        [:div {:style {:margin "0 auto"}}
          [clear-button]
          [sms-button]]))
 

@@ -34,11 +34,15 @@
 (defn clear-button
   "Clear messages"
   []
-  [:button {:style {:font-size 10
+  [:button {:style {:font-family "Gloria Hallelujah, cursive"
+                    :font-size 11
                     :border "none"
-                    ;;:background-color "white"
                     :text-align "center"
-                    :display "inline-block"}
+                    :border-radius "15px"
+                    :padding "5px 7px 5px 7px"
+                    :margin "5px"
+                    }
             :type "button"
-            :value "Reset"
-            :onClick #((rf/dispatch [::message-events/clear-messages]))}])
+            :value "reset?"
+            :onClick #((rf/dispatch [::message-events/clear-messages]))}
+   "reset"])

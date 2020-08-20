@@ -7,6 +7,6 @@
                                              {:access-key-id     (System/getenv "AWS_ACCESS_KEY")
                                               :secret-access-key (System/getenv "AWS_SECRET_ACCESS_KEY")})}))
 
-(defn send-sms [ring-req]
+(defn send-sms []
   (aws/invoke sns {:op :Publish :request {:TopicArn (System/getenv "TOPIC_ARN")
                                           :Message "Moo from Thagomizer?"}}))
