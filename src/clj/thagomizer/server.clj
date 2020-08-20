@@ -13,7 +13,7 @@
   (GET "/" ring-req         (handler/landing-pg-handler ring-req))
   (GET "/chsk" ring-req     (ws/ring-ajax-get-or-ws-handshake ring-req))
   (POST "/chsk" ring-req    (ws/ring-ajax-post ring-req))
-  (POST "/sms" ring-req     (handler/sms-handler ring-req))
+  (GET "/sms" ring-req      (handler/sms-handler ring-req)) ;;should be post, but antiforgery a pain
   (route/resources "/"      {:root "public"})
   (route/not-found          "<h1>Page not found</h1>"))
 
@@ -21,9 +21,7 @@
 
 (def main-ring-handler
   (ring.middleware.defaults/wrap-defaults
-   ring-routes
-   ;; disabling anti-forgery because the only POST request is to submit sms
-   (assoc-in ring.middleware.defaults/site-defaults [:security :anti-forgery] false)))
+   ring-routes ring.middleware.defaults/site-defaults))
 
 (defn stop-router! []
   (when-let [stop-fn @router_]

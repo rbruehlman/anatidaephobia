@@ -6,5 +6,4 @@
                  :text-field ""
                  :is-typing {:self false :others #{}}
                  :uids {}
-                 :messages #queue []
-                 :sms-status nil})
+                 :messages #queue []})

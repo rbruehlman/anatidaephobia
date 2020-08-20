@@ -6,7 +6,7 @@
 (rf/reg-event-fx
  ::send-sms
  (fn []
-     {:http-xhrio {:method :post
+     {:http-xhrio {:method :get
                    :uri "/sms"
                    :format (ajax/json-request-format)
                    :response-format (ajax/text-response-format)

@@ -35,7 +35,8 @@
     (= event-id :thagomizer/typing-status)
       (rf/dispatch [::typing-events/set-typing-status uid msg])
     (= event-id :thagomizer/connected-uids)
-      (do
+      (rf/dispatch [::uid-events/set-uids msg])
+      #_(do
         (rf/dispatch [::uid-events/set-uids msg])
         (rf/dispatch [::message-events/remove-inactive-user-messages])
         )
