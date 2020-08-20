@@ -1,9 +1,10 @@
 (ns thagomizer.components.core
   (:require
    [re-frame.core :as rf]
-   [thagomizer.components.accents :refer [header, online-users]]
+   [thagomizer.components.accents :refer [header, online-users, clear-button]]
    [thagomizer.components.input :refer [input-text-field, input-passcode-field]]
    [thagomizer.components.messages :refer [messages]]
+   [thagomizer.components.sms :refer [sms-button]]
    [thagomizer.components.typing :refer [typing-indicator]]
    [thagomizer.components.utils :as c-utils]
    [thagomizer.subs.core :as subs]))
@@ -15,7 +16,10 @@
         [:div
          [input-text-field]]
         [:div
-         [online-users]]))
+         [online-users]]
+        [:div {:style {:margin "0 auto"}}
+         [clear-button]
+         [sms-button]]))
 
 (defn larson []
   [:img {:src "https://berthoudsurveyor.com/wp-content/uploads/2018/04/thagomizer.jpg"
