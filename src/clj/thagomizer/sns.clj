@@ -1,12 +1,12 @@
 (ns thagomizer.sns
   (:require [cognitect.aws.client.api :as aws]
-            [cognitect.aws.credentials :as credentials]))
+            [ring.util.response :as response]))
 
-(def sns (aws/client {:api :sns
-                      :credentials-provider (credentials/basic-credentials-provider
-                                             {:access-key-id     (System/getenv "AWS_ACCESS_KEY")
-                                              :secret-access-key (System/getenv "AWS_SECRET_ACCESS_KEY")})}))
+(def sns (aws/client {:api :sns}))
 
 (defn send-sms []
-  (aws/invoke sns {:op :Publish :request {:TopicArn (System/getenv "TOPIC_ARN")
-                                          :Message "Moo from Thagomizer?"}}))
+  (let [result (aws/invoke sns {:op :Publish :request {:TopicArn "arn:aws:sns:us-east-1:523586208714:google-meet"
+                                                       :Message "Moo from Thagomizer?"}})]
+  (if (get result :MessageId)
+    (response/status 200)
+    (response/status 500))))

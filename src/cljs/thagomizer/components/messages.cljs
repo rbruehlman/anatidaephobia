@@ -4,7 +4,7 @@
    [re-frame.core :as rf]
    [thagomizer.subs.core :as subs]
    [thagomizer.events.messages :as message-events]
-   [thagomizer.components.utils :refer [trunc-uid]]
+   [thagomizer.components.utils :as c-utils]
    [cljsjs.moment]))
 
 (defn message
@@ -54,7 +54,8 @@
                              :color (:color msg)
                              :padding-left 10
                              :text-align "right"}}
-              (trunc-uid (:author msg))]]
+              (c-utils/trunc-uid (:author msg))]]
             [:div.row {:class "is-8"
                        :style {:text-align "left"}}
-             (:msg msg)]])]))}))
+             (for [p (c-utils/split-paragraph (:msg msg))]
+               [:p p])]])]))}))
