@@ -14,7 +14,7 @@
   "We want to send the message when the user hits enter, but add a 
    paragraph when they hit shift+enter.  Otherwise, behave as normal!"
   [e dispatch-shift-enter-event dispatch-enter-event]
-  (let [key-num (.-which e)
+  (let [key-num (or (.-keyCode e) (.-which e))
         shift   (.-shiftKey e)
         enter   13]
     (cond
@@ -45,7 +45,8 @@
                        :value text-field
                        :wrap "soft"
                        :on-change #(on-text-field-value-change %)
-                       :on-key-down #(handle-enter-press % ::input-events/update-text-field ::input-events/submit-message)
+                       :on-key-down #(handle-enter-press % ::input-events/update-text-field
+                                                           ::input-events/submit-message)
                        :style (merge {:min-height "100px"
                                       :width "100%"
                                       :resize "none"
@@ -72,7 +73,8 @@
                        :value passcode
                        :wrap "soft"
                        :on-change #(on-passcode-value-change %)
-                       :on-key-down #(handle-enter-press % ::input-events/update-passcode-field ::input-events/submit-passcode)
+                       :on-key-down #(handle-enter-press % ::input-events/update-passcode-field
+                                                           ::input-events/submit-passcode)
                        :style (merge {:min-height "10px"
                                       :width "30%"
                                       :font-size "16px"

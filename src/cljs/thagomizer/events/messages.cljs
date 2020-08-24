@@ -1,7 +1,8 @@
 (ns thagomizer.events.messages
   (:require
    [reagent.core :as reagent]
-   [re-frame.core :as rf]))
+   [re-frame.core :as rf]
+   [thagomizer.utils :as utils]))
 
 ;;Goodbye message!  We are popping you from the FIFO queue
 (rf/reg-event-db
@@ -61,7 +62,7 @@
  (fn [db]
    (let [uids (keys (:uids db))
          messages (:messages db)]
-     (assoc db :messages (queue (filter #(contains? uids (:uid %)) messages))))))
+     (assoc db :messages (queue (filter #(utils/in? uids (keyword (:author %))) messages))))))
 
 ;;remove messages from inactive users
 (rf/reg-event-db

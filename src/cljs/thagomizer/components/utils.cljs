@@ -13,3 +13,6 @@
 
 (defn trunc-uid [uid]
   (first (str/split uid #"-")))
+
+(defn split-paragraph [msg]
+  (str/split msg "\n"))
