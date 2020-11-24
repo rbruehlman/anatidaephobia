@@ -13,9 +13,10 @@
  (fn [cofx [_ value]]
    (let [db  (:db cofx)
          was-typing? (get-in db [:typing-status :self])
-         is-typing? (not (empty? value))]
+         is-typing? (not (empty? value))
+         uid (:uid db)]
      (when (not= was-typing? is-typing?)
-       (ws-client/chsk-send! [:thagomizer/typing-status is-typing?] 5000))
+       (ws-client/chsk-send! [:thagomizer/typing-status {(keyword uid) is-typing?}] 5000))
      {:db (-> db
               (assoc :text-field value)
               (assoc-in [:is-typing :self] is-typing?))})))
@@ -31,7 +32,7 @@
      (if (str/blank? msg)
        (js/alert "Can't send a blank message!")
        (do
-         (ws-client/chsk-send! [:thagomizer/typing-status is-typing?] 5000) ;; why do I need this again?
+         (ws-client/chsk-send! [:thagomizer/typing-status is-typing?] 5000)
          (ws-client/chsk-send! [:thagomizer/message msg] 5000)
          (rf/dispatch [::update-text-field ""]))))))
 
@@ -43,4 +44,6 @@
 (rf/reg-event-db
  ::submit-passcode
  (fn [db]
-   (assoc db :authenticated (= "m00m00" (:passcode db)))))
+   (let [passcode (:passcode db)]
+   (-> db (assoc :authenticated (str/includes? passcode "m00m00"))
+          (assoc :history-retention (= passcode "m00m00m00"))))))

@@ -1,17 +1,11 @@
 (ns thagomizer.events.messages
   (:require
+   [clojure.set :as set]
    [reagent.core :as reagent]
    [re-frame.core :as rf]
    [thagomizer.utils :as utils]))
 
-;;Goodbye message!  We are popping you from the FIFO queue
-(rf/reg-event-db
- ::remove-message
- (fn [db]
-   (update db :messages pop)))
-
 ;; Add the latest message to the DB message FIFO queue (limited at 10 items)
-;; and set a timeout effect to remove the message after 5 minutes.
 (rf/reg-event-fx
  ::set-latest-message
  (fn [cofx [_ event-data]]
@@ -22,27 +16,8 @@
             (update db :messages
                     #(conj (pop %) new-message))
             (update db :messages
-                    conj new-message))
-      :timeout {:id (:timestamp event-data)
-                :event [::remove-message]
-                :time 300000 ;; 5 minutes
-                }})))
+                    conj new-message))})))
 
-(defonce timeouts (reagent/atom {}))
-
-;;Fire an event after a certain amount of time!
-(rf/reg-fx
- :timeout
- (fn [{:keys [id event time]}]
-   (when-some [existing (get @timeouts id)]
-     (js/clearTimeout existing)
-     (swap! timeouts dissoc id))
-   (when (some? event)
-     (swap! timeouts assoc id
-            (js/setTimeout
-             (fn []
-               (rf/dispatch event))
-             time)))))
 
 ;;scroll down to the end of the messages
 (rf/reg-event-fx
@@ -56,15 +31,20 @@
   ([coll]
    (reduce conj #queue [] coll)))
 
-;;remove messages from inactive users
+;;remove messages from inactive users, if history retention off
 (rf/reg-event-db
- ::remove-inactive-user-messages
- (fn [db]
-   (let [uids (keys (:uids db))
-         messages (:messages db)]
-     (assoc db :messages (queue (filter #(utils/in? uids (keyword (:author %))) messages))))))
+ ::handle-inactive-user-messages
+ (fn [db [_ msg]]
+   (let [lost-uid (keyword (:lost-uid msg))
+         messages (:messages db)
+         history-retention (:history-retention db)]
+     (if history-retention
+       (update db :messages (queue (set/rename-keys messages {lost-uid :past-user})))
+       (assoc db :messages (queue (filter #(not= lost-uid (keyword (:author %))) messages)))
+       )
+     )))
 
-;;remove messages from inactive users
+;;remove all messages
 (rf/reg-event-db
  ::clear-messages
  (fn [db]

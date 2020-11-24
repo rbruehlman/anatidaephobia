@@ -6,4 +6,5 @@
                  :text-field ""
                  :is-typing {:self false :others #{}}
                  :uids {}
-                 :messages #queue []})
+                 :messages #queue []
+                 :history-retention false})

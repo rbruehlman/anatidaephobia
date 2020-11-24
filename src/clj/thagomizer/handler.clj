@@ -68,7 +68,8 @@
 (defmethod -event-msg-handler
   :thagomizer/typing-status
   [{:as _ev-msg :keys [ring-req ?data]}]
-  (publish-to-others :thagomizer/typing-status ?data ring-req))
+  (when (not (nil? ?data)) ;;not sure why nil was being sent
+   (publish-to-others :thagomizer/typing-status ?data ring-req)))
 
 (defmethod -event-msg-handler
   :thagomizer/message
@@ -77,13 +78,14 @@
                                        :msg ?data
                                        :timestamp (.getTime (java.util.Date.))}))
 
-;; when connected uids change, we want to broadcast this to listeners
-;; so that they can update their list of active users
-(add-watch
- ws/connected-uids
- :connected-uids
- (fn [_ _ old new]
-   (let [new-uids (set (:ws new))]
-     (cond (not= old new)
-           (publish-to-all :thagomizer/connected-uids
-                           {:uids new-uids})))))
+(defmethod -event-msg-handler
+  :chsk/uidport-open
+  [{:as _ev-msg :keys [uid]}]
+  (publish :thagomizer/login uid [uid])
+  (publish-to-all :thagomizer/new-user {:uids (:any @ws/connected-uids)}))
+
+(defmethod -event-msg-handler
+  :chsk/uidport-close
+  [{:as _ev-msg :keys [uid]}]
+  (publish-to-all :thagomizer/lost-user {:uids (:any @ws/connected-uids)
+                                         :lost-uid uid}))
