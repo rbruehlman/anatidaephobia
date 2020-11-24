@@ -58,3 +58,8 @@
      (-> db
          (remove-uids inactive-uids)
          (add-uids new-uids)))))
+
+(rf/reg-event-db
+ ::set-self-uid
+ (fn [db [_ msg]]
+   (assoc db :uid msg)))

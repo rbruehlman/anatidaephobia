@@ -12,7 +12,7 @@
   (str/join " " (map name (filter identity args))))
 
 (defn trunc-uid [uid]
-  (first (str/split uid #"-")))
+  (first (str/split (name uid) #"-")))
 
 (defn split-paragraph [msg]
   (str/split msg "\n"))

@@ -28,19 +28,21 @@
 
 (defmethod -event-msg-handler :chsk/recv
   [{:as _ev-msg :keys [?data]}]
-  (let [[event-id {:keys [uid msg]}] ?data]
+  (let [[event-id {:keys [msg]}] ?data]
     (cond
-    (= event-id :thagomizer/message)
+      (= event-id :thagomizer/message)
       (rf/dispatch [::message-events/set-latest-message (second ?data)])
-    (= event-id :thagomizer/typing-status)
-      (rf/dispatch [::typing-events/set-typing-status uid msg])
-    (= event-id :thagomizer/connected-uids)
-      (do
-        (rf/dispatch [::uid-events/set-uids msg])
-        (rf/dispatch [::message-events/remove-inactive-user-messages])
-        )
-    :else (ws-utils/->output! (str "Shit went sideways" event-id)))
-  ))
+      (= event-id :thagomizer/typing-status)
+      (rf/dispatch [::typing-events/set-typing-status msg])
+      (= event-id :thagomizer/new-user)
+      (rf/dispatch [::uid-events/set-uids msg])
+      (= event-id :thagomizer/lost-user)
+         (do
+         (rf/dispatch [::uid-events/set-uids msg])
+         (rf/dispatch [::message-events/handle-inactive-user-messages msg]))
+      (= event-id :thagomizer/login)
+        (rf/dispatch [::uid-events/set-self-uid msg])
+      :else (ws-utils/->output! (str "Shit went sideways" event-id)))))
 
 (defmethod -event-msg-handler :thagomizer/message
   [{:as _ev-msg :keys [?data]}]

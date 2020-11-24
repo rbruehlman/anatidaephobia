@@ -58,4 +58,4 @@
             [:div.row {:class "is-8"
                        :style {:text-align "left"}}
              (for [p (c-utils/split-paragraph (:msg msg))]
-               [:p p])]])]))}))
+               [:p {:key (str (:timestamp msg) "-p")} p])]])]))}))

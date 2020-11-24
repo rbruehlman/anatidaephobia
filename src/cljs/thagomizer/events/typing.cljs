@@ -16,8 +16,10 @@
 ;;Sets typing status based on who is typing (you or someone else)
 (rf/reg-event-db
  ::set-typing-status
- (fn [db [_ uid status]]
-   (let [self (:uid db)]
-     (if (= uid self)
+ (fn [db [_ msg]]
+   (let [self (:uid db)
+         typer (first (keys msg))
+         status (typer msg)]
+     (if (= typer self)
        (set-self-typing-status db status)
-       (set-others-typing-status db uid status)))))
+       (set-others-typing-status db typer status)))))

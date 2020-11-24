@@ -19,11 +19,6 @@
    (get-in db [:is-typing :others])))
 
 (rf/reg-sub
- ::latest-messages
- (fn [db]
-   (seq (:messages db))))
-
-(rf/reg-sub
  ::uid
  (fn [db]
    (:uid db)))
@@ -56,3 +51,8 @@
  ::authentication
  (fn [db]
    (:authenticated db)))
+
+(rf/reg-sub
+ ::history-retention
+ (fn [db]
+   (:history-retention db)))
