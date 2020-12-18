@@ -138,8 +138,11 @@ out
 yarn-error.log
 report.html
 .zprintrc
+.vscode/*
 
 # lein
 .lein-repl-history
 resources/public/cljs-runtime/
 resources/public/main.js
+
+env.sh

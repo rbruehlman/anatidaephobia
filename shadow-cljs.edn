@@ -12,8 +12,8 @@
                      :preloads  [devtools.preload
                                  day8.re-frame-10x.preload]}
         :release    {:compiler-options {:source-map    false
-                                                :optimizations :advanced
-                                                :infer-externs :auto}}}}
+                                        :optimizations :advanced
+                                        :infer-externs :auto}}}}
  :dependencies [[reagent "1.0.0-alpha2"]]
  :dev-http {3000 "resources/public"}
  :nrepl {:port 3333}
