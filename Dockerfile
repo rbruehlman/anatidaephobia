@@ -21,4 +21,4 @@ CMD ["java", "-jar", "thagomizer.jar"]
 
 #so i don't forget later
 #DOCKER_BUILDKIT=1 docker build . -t thagomizer:latest --secret id=aws,src=$HOME/.aws/credentials
-#docker run -p 80:5000 -v ~/.aws/:/root/.aws/ rbruehlman/thagomizer
+#docker run -p 80:8000 -v ~/.aws/:/root/.aws/ -e DB_HOST="" -e DB_PASSWORD="" rbruehlman/thagomizer:latest

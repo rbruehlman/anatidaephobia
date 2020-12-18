@@ -2,11 +2,11 @@
   (:require
    [reagent.dom :as rdom]
    [re-frame.core :as rf]
-   [thagomizer.events.core :as events]
-   [thagomizer.ws.client :as client]
+   [thagomizer.common.events :as events]
+   [thagomizer.chat.ws.client :as client]
    [thagomizer.config :as config]
-   [thagomizer.ws.events :as ws-events]
-   [thagomizer.components.core :as components]
+   [thagomizer.chat.ws.events :as ws-events]
+   [thagomizer.entry.components.core :as components]
    [taoensso.sente  :as sente]
    [day8.re-frame.http-fx]))
 

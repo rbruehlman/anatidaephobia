@@ -3,6 +3,7 @@
 .shadow-cljs
 .clj-kondo
 .nrepl-port
+env.sh
 
 dev/
 env/

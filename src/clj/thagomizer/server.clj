@@ -2,26 +2,35 @@
   (:require
    [taoensso.sente :as sente]
    [ring.middleware.defaults]
+   [ring.middleware.reload]
    [org.httpkit.server :as http-kit]
-   [compojure.core :as comp :refer (defroutes GET POST)]
    [compojure.route    :as route]
-   [thagomizer.handler :as handler]
+   [compojure.core :as comp :refer (defroutes GET POST)]
+   [thagomizer.handler.routes.ws :as ws-handler]
+   [thagomizer.handler.routes.app :as app-handler]
+   [thagomizer.handler.routes.messages :as msg-handler]
+   [thagomizer.handler.routes.sns :as sns-handler]
+   [thagomizer.handler.routes.visits :as visit-handler]
    [thagomizer.ws :as ws])
   (:gen-class))
 
 (defroutes ring-routes
-  (GET "/" ring-req         (handler/landing-pg-handler ring-req))
+  (GET "/" ring-req         (app-handler/landing-pg-handler ring-req))
   (GET "/chsk" ring-req     (ws/ring-ajax-get-or-ws-handshake ring-req))
   (POST "/chsk" ring-req    (ws/ring-ajax-post ring-req))
-  (GET "/sms" ring-req      (handler/sms-handler ring-req)) ;;should be post, but antiforgery a pain
+  (GET "/messages" ring-req (msg-handler/display-message-handler ring-req))
+  (POST "/message" ring-req (msg-handler/new-message-handler ring-req))
+  (POST "/sms" ring-req     (sns-handler/sns-handler ring-req))
+  (POST "/visits" ring-req  (visit-handler/visit-handler ring-req))
   (route/resources "/"      {:root "public"})
   (route/not-found          "<h1>Page not found</h1>"))
 
 (defonce router_ (atom nil))
 
 (def main-ring-handler
-  (ring.middleware.defaults/wrap-defaults
-   ring-routes ring.middleware.defaults/site-defaults))
+  (ring.middleware.reload/wrap-reload
+   (ring.middleware.defaults/wrap-defaults
+   ring-routes ring.middleware.defaults/site-defaults)))
 
 (defn stop-router! []
   (when-let [stop-fn @router_]
@@ -31,7 +40,7 @@
   (stop-router!)
   (reset! router_
           (sente/start-server-chsk-router!
-           ws/ch-chsk handler/event-msg-handler)))
+           ws/ch-chsk ws-handler/event-msg-handler)))
 
 (defonce web-server_ (atom nil))
 (defn stop-web-server! []
@@ -40,7 +49,7 @@
 
 (defn start-web-server! [& [port]]
   (stop-web-server!)
-  (let [port (or port 5000)
+  (let [port (or port 8000)
         ring-handler (var main-ring-handler)
         [port stop-fn]
         (let [stop-fn (http-kit/run-server ring-handler {:port port})]
