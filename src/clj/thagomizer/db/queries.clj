@@ -1,7 +1,9 @@
-(ns thagomizer.queries
-  (:require [thagomizer.db :refer [ds]]
+(ns thagomizer.db.queries
+  (:require [thagomizer.db.connection :refer [ds]]
             [next.jdbc :as jdbc]
-            [next.jdbc.result-set :as rs]))
+            [next.jdbc.result-set :as rs]
+            [next.jdbc.date-time]
+            ))
 
 (defn create-prompt-table []
   (jdbc/execute! ds ["CREATE TABLE IF NOT EXISTS prompt (
@@ -22,12 +24,12 @@
                       );"]))
 
 (defn insert-visit []
-  (jdbc/execute! ds [(format "INSERT INTO visit (timestamp)
-                              VALUES (DEFAULT);")]))
+  (jdbc/execute! ds ["INSERT INTO visit (timestamp)
+                     VALUES (DEFAULT);"]))
 
-(defn get-next-prompt []
-  (first
-    (jdbc/execute! ds ["SELECT
+(defn- get-prompt [order]
+  (jdbc/execute-one! ds [(str 
+                          "SELECT
                           id,
                           prompt,
                           last_used
@@ -48,9 +50,15 @@
                              GROUP BY prompt_id
                              ORDER BY MAX(timestamp) ASC) last
                           ON prompt.id = last.prompt_id) as prompts
-                        ORDER BY last_used ASC
-                        LIMIT 1"]
-                   {:builder-fn rs/as-unqualified-maps})))
+                        ORDER BY last_used " order
+                        " LIMIT 1")]
+                   {:builder-fn rs/as-unqualified-maps}))
+
+(defn get-last-prompt []
+  (get-prompt "DESC"))
+
+(defn get-next-prompt []
+  (get-prompt "ASC"))
 
 (defn create-message-table []
   (jdbc/execute! ds ["CREATE TABLE IF NOT EXISTS message (
@@ -65,32 +73,39 @@
                       VALUES (?, ?);"
                      message prompt_id]))
 
-(defn get-messages [offset]
-  (jdbc/execute! ds [(str "SELECT
+(defn get-last-message-timestamp []
+  (:same_day
+   (jdbc/execute-one! ds ["SELECT
+                           MAX(timestamp::DATE) = NOW()::DATE as same_day
+                           FROM message"])
+   {:builder-fn rs/as-unqualified-maps}))
+
+(defn get-messages [page]
+  (let [offset (* (- page 1) 10)]
+  (jdbc/execute! ds ["SELECT
                       message.id,
                       message.timestamp,
                       message.message,
-                      CASE WHEN last_visit.rank IS NOT NULL
+                      CEIL(COUNT(*) OVER () / 10.0) as page_count,
+                      (?::int+10)/10 as current_page,
+                      CASE WHEN last_visit.dummy IS NOT NULL
                            THEN TRUE
                            ELSE FALSE
                            END AS new
                       FROM message
                       LEFT JOIN (
-                         SELECT timestamp,
-                                rank
-                         FROM (SELECT timestamp, ROW_NUMBER() OVER 
-                                      (ORDER BY timestamp DESC) as rank
-                               FROM visit) recency
-                         WHERE rank = 2) last_visit
+                         SELECT
+                           1 as dummy,
+                           max(timestamp) as timestamp
+                         FROM visit) last_visit
                       ON message.timestamp >= last_visit.timestamp
                       ORDER BY message.timestamp DESC
-                      LIMIT 10 
-                      OFFSET " offset)]
-                     {:builder-fn rs/as-unqualified-maps}))
+                      LIMIT 10
+                      OFFSET ?::int" offset offset]
+                     {:builder-fn rs/as-unqualified-maps})))
 
 (defn get-page-count []
-  (first
-   (jdbc/execute! ds ["SELECT
+  (jdbc/execute-one! ds ["SELECT
                           FLOOR(COUNT(*)/10.0) as pg_ct
                        FROM message"]
-                  {:builder-fn rs/as-unqualified-maps})))
+                  {:builder-fn rs/as-unqualified-maps}))

@@ -4,6 +4,7 @@
    [re-frame.core :as rf]
    [ajax.core :as ajax]
    [thagomizer.send.queries :as q]
+   [thagomizer.entry.queries.authentication :as auth-q]
    [thagomizer.common.funcs :refer [?csrf-token]]))
 
 
@@ -13,15 +14,17 @@
    (q/set-text-field db value)))
 
 (rf/reg-event-fx
- ::send-sms
- (fn [cofx]
+ ::send-message
+ (fn [cofx [_]]
    (let [db  (:db cofx)
-         msg (q/get-text-field db)]
+         msg (q/get-text-field db)
+         admin (auth-q/get-admin-status db)]
+     
      (if (str/blank? msg)
        (js/alert "Can't send a blank message!")
        {:http-xhrio {:method :post
                      :uri "/message"
-                     :params {:data msg}
+                     :params {:data msg :admin admin}
                      :headers {:X-CSRF-Token ?csrf-token}
                      :format (ajax/json-request-format)
                      :response-format (ajax/text-response-format)
@@ -30,11 +33,11 @@
 
 (rf/reg-event-fx
  ::handle-sms-success
- (fn [_]
+ (fn []
    (js/alert "Moo!")
-   {:fx [:dispatch [:update-text-field ""]]}))
+   {:fx [[:dispatch [::update-text-field ""]]]}))
 
 (rf/reg-event-fx
  ::handle-sms-failure
- (fn [_ [_ response]]
-   (js/alert (str "Houston, we have a problem..." response))))
+ (fn []
+   (js/alert (str "Houston, we have a problem..."))))

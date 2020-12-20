@@ -11,3 +11,9 @@
 
 (defn get-passcode-field [db]
   (get db :passcode))
+
+(defn set-admin-status [db bool]
+  (assoc-in db [:admin] bool))
+
+(defn get-admin-status [db]
+  (get-in db [:admin]))

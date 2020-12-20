@@ -9,6 +9,11 @@
    (auth-q/get-passcode-field db)))
 
 (rf/reg-sub
+ ::admin-status
+ (fn [db]
+   (auth-q/get-admin-status db)))
+
+(rf/reg-sub
  ::authorized-mode
  (fn [db [_ mode]]
    (auth-q/get-authentication db mode)))

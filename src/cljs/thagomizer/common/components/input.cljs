@@ -1,7 +1,6 @@
 (ns thagomizer.common.components.input
   (:require
-   [re-frame.core :as rf]
-   [thagomizer.common.components.utils :as c-utils]))
+   [re-frame.core :as rf]))
 
 (defn target-value
   "Extracts the value of the event fired."
@@ -30,28 +29,3 @@
   "Sets the text field with the value submitted in the event"
   [update-event e]
   (rf/dispatch [update-event (target-value e)]))
-
-(defn input-text-field
-  "Component for the input text field"
-  [submit-sub update-event submit-event style-overrides]
-  (let [text-field @(rf/subscribe [submit-sub])
-        style-overrides (or style-overrides {})]
-    [:form {:on-submit (fn [e]
-                         (.preventDefault e)
-                         (rf/dispatch [submit-sub]))}
-     [:div [:textarea {:name :text-field
-                       :minLength 1
-                       :value text-field
-                       :wrap "soft"
-                       :on-change #((partial on-text-field-value-change update-event %))
-                       :on-key-down #(handle-enter-press % update-event
-                                                           submit-event)
-                       :style (merge {:min-height "100px"
-                                      :width "100%"
-                                      :resize "none"
-                                      :font-size "16px"
-                                      :font-family "Roboto, sans-serif"
-                                      :display "flex"
-                                      :overflow-y "scroll"}
-                                     c-utils/center-css
-                                     style-overrides)}]]]))

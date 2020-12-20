@@ -6,8 +6,8 @@
    [thagomizer.entry.components.passcode :refer [input-passcode-field]]
    [thagomizer.entry.subs.authentication :as authentication-subs]
    [thagomizer.chat.components.app :refer [chat-app]]
-   [thagomizer.receipt.components :refer [receipt-app]]
-   [thagomizer.send.components :refer [send-app]]))
+   [thagomizer.send.components :refer [send-app]]
+   [thagomizer.receipt.components :refer [receipt-app]]))
 
 
 (defn larson []

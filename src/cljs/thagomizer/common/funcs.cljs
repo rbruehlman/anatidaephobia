@@ -23,14 +23,17 @@
 (defn convert-to-human-time
   "Display time in h:mm A format, e.g. 10:23 PM.
    The try/catch here is because there were invalid dates for some reason?"
-  [unix-time]
+  [unix-time format]
   (try
-    (.format (js/moment unix-time) "h:mm A")
+    (.format (js/moment unix-time) format)
     (catch :default e
       e)))
 
 (defn not-nil? [val]
   (not (nil? val)))
+
+(defn not-empty? [val]
+  (comp (empty? val)))
 
 (defn queue
   "Make things into a queue"

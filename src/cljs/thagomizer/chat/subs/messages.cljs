@@ -6,11 +6,6 @@
    [thagomizer.chat.queries.uids :as uid-q]))
 
 (rf/reg-sub
- ::history-retention
- (fn [db]
-   (message-q/get-history-retention db)))
-
-(rf/reg-sub
  ::newest-message
  (fn [db]
    (message-q/get-newest-message db)))

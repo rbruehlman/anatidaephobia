@@ -10,6 +10,7 @@
    [thagomizer.handler.routes.app :as app-handler]
    [thagomizer.handler.routes.messages :as msg-handler]
    [thagomizer.handler.routes.sns :as sns-handler]
+   [thagomizer.handler.routes.visits :as visit-handler]
    [thagomizer.ws :as ws])
   (:gen-class))
 
@@ -20,6 +21,7 @@
   (GET "/messages" ring-req (msg-handler/display-message-handler ring-req))
   (POST "/message" ring-req (msg-handler/new-message-handler ring-req))
   (POST "/sms" ring-req     (sns-handler/sns-handler ring-req))
+  (POST "/visits" ring-req  (visit-handler/visit-handler ring-req))
   (route/resources "/"      {:root "public"})
   (route/not-found          "<h1>Page not found</h1>"))
 

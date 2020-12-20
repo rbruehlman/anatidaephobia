@@ -1,4 +1,4 @@
-(ns thagomizer.db
+(ns thagomizer.db.connection
   (:require [next.jdbc :as jdbc]))
 
 (def db {:dbtype "postgres"

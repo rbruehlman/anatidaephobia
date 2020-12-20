@@ -10,7 +10,6 @@
      {:http-xhrio {:method :post
                    :uri "/sms"
                    :headers {:X-CSRF-Token ?csrf-token}
-                   :params {:uid "b"}
                    :format (ajax/json-request-format)
                    :response-format (ajax/text-response-format)
                    :on-success [::handle-sms-success]

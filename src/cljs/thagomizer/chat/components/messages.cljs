@@ -48,7 +48,7 @@
                      :key (str timestamp "-timestamp-sp")
                      :style {:font-size 12
                              :text-align "left"}}
-              (f-utils/convert-to-human-time timestamp)]
+              (f-utils/convert-to-human-time timestamp "h:mm A")]
              [:span {:class "is-2"
                      :key (str timestamp "-user-sp")
                      :style {:font-size 12

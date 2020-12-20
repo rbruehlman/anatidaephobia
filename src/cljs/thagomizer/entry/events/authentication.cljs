@@ -2,8 +2,7 @@
   (:require [re-frame.core :as rf]
             [clojure.string :as str]
             [thagomizer.common.funcs :as f-utils]
-            [thagomizer.entry.queries.authentication :as auth-q]
-            [thagomizer.chat.queries.messages :as message-q]))
+            [thagomizer.entry.queries.authentication :as auth-q]))
 
 
 (rf/reg-event-db
@@ -32,6 +31,6 @@
              (auth-q/set-authentication :send false))
          :else
          (auth-q/set-authentication db mode true))
-       (if (= passcode "m00m00m00-c")
-         (message-q/set-history-retention db true)
-         db)))))
+       (if (str/includes? passcode "m00m00m00")
+         (auth-q/set-admin-status db true)
+         (auth-q/set-admin-status db false))))))

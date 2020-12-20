@@ -33,9 +33,3 @@
 
 (defn set-message-color [msg color]
   (assoc-in msg [:color] color))
-
-(defn set-history-retention [db bool]
-  (assoc-in db [:chat :history-retention] bool))
-
-(defn get-history-retention [db]
-  (get-in db [:chat :history-retention]))

@@ -1,7 +1,8 @@
 (ns thagomizer.chat.events.messages
   (:require
    [re-frame.core :as rf]
-   [thagomizer.chat.queries.messages :as message-q]))
+   [thagomizer.chat.queries.messages :as message-q]
+   [thagomizer.entry.queries.authentication :as auth-q]))
 
 ;; Add the latest message to the DB message FIFO queue (limited at 10 items)
 (rf/reg-event-fx
@@ -22,13 +23,13 @@
    (let [message-list (.getElementById js/document "message-list")]
      (.scrollTo message-list 0 (.-scrollHeight message-list)))))
 
-;;remove messages from inactive users, if history retention off
+;;remove messages from inactive users, if not admin
 (rf/reg-event-db
  ::handle-inactive-user-messages
  (fn [db [_ msg]]
    (let [lost-uid (keyword msg)
          messages (message-q/get-messages db)
-         history-retention (message-q/get-history-retention db)]
-      (if history-retention
+         admin (auth-q/get-admin-status db)]
+      (if admin
         (message-q/update-former-uid-msgs db lost-uid messages)
         (message-q/remove-former-uid-msgs db lost-uid messages)))))
