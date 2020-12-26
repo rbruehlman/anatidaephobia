@@ -13,11 +13,6 @@
   :height (.-top dom-rect)
   :width (.-top dom-rect))
 
-(defn cs
-  "Multiple classes!"
-  [& args]
-  (str/join " " (map name (filter identity args))))
-
 (defn trunc-uid [uid]
   (first (str/split (name uid) #"-")))
 

@@ -17,11 +17,13 @@
                  [ring/ring-anti-forgery "1.3.0"]
                  [com.cognitect.aws/api "0.8.474"]
                  [com.cognitect.aws/sns "807.2.729.0"]
+                 [com.cognitect.aws/s3 "810.2.801.0"]
                  [com.cognitect.aws/endpoints "1.1.11.842"]
                  [seancorfield/next.jdbc "1.1.613"]
                  [org.postgresql/postgresql "42.2.18"]
                  [ring/ring-devel "1.8.2"]
-                 [cheshire "5.10.0"]]
+                 [cheshire "5.10.0"]
+                 [com.github.gkarthiks/s3-presigned-url "0.1.1"]]
 
   :plugins [[lein-shell "0.5.0"]]
   :min-lein-version "2.5.3"

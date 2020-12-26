@@ -1,8 +1,9 @@
 (ns thagomizer.server
   (:require
    [taoensso.sente :as sente]
-   [ring.middleware.defaults]
-   [ring.middleware.reload]
+   [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
+   [ring.middleware.reload :refer []]
+   [ring.middleware.multipart-params :refer [wrap-multipart-params]]
    [org.httpkit.server :as http-kit]
    [compojure.route    :as route]
    [compojure.core :as comp :refer (defroutes GET POST)]
@@ -11,6 +12,7 @@
    [thagomizer.handler.routes.messages :as msg-handler]
    [thagomizer.handler.routes.sns :as sns-handler]
    [thagomizer.handler.routes.visits :as visit-handler]
+   [thagomizer.handler.routes.images :as image-handler]
    [thagomizer.ws :as ws])
   (:gen-class))
 
@@ -22,15 +24,15 @@
   (POST "/message" ring-req (msg-handler/new-message-handler ring-req))
   (POST "/sms" ring-req     (sns-handler/sns-handler ring-req))
   (POST "/visits" ring-req  (visit-handler/visit-handler ring-req))
+  (POST "/images" ring-req  (image-handler/image-handler ring-req))
   (route/resources "/"      {:root "public"})
   (route/not-found          "<h1>Page not found</h1>"))
 
 (defonce router_ (atom nil))
 
 (def main-ring-handler
-  (ring.middleware.reload/wrap-reload
-   (ring.middleware.defaults/wrap-defaults
-   ring-routes ring.middleware.defaults/site-defaults)))
+  (wrap-multipart-params
+   (wrap-defaults ring-routes site-defaults)))
 
 (defn stop-router! []
   (when-let [stop-fn @router_]

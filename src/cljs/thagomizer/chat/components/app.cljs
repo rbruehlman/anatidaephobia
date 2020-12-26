@@ -4,7 +4,7 @@
    [reagent.dom :as rdom]
    [thagomizer.chat.components.accents :refer [online-users]]
    [thagomizer.common.components.utils :as c-utils]
-   [thagomizer.common.components.sms :refer [sms-button]]
+   [thagomizer.common.components.input :refer [button]]
    [thagomizer.chat.components.messages :refer [messages]]
    [thagomizer.chat.components.typing :refer [typing-indicator]]
    [thagomizer.chat.events.sms :as sms-events]
@@ -41,4 +41,4 @@
          [:div {:style {:margin "0 auto"}
                 :key "buttons"}
           ;;[img-button]
-          [sms-button [::sms-events/send-sms]]]])})))
+          [button [::sms-events/send-sms] "sms" "moo?"]]])})))

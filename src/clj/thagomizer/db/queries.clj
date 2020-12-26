@@ -73,6 +73,11 @@
                       VALUES (?, ?);"
                      message prompt_id]))
 
+(defn insert-image [image prompt_id]
+  (jdbc/execute! ds ["INSERT INTO message (image, prompt_id)
+                      VALUES (?, ?);"
+                     image prompt_id]))
+
 (defn get-last-message-timestamp []
   (:same_day
    (jdbc/execute-one! ds ["SELECT
@@ -109,3 +114,6 @@
                           FLOOR(COUNT(*)/10.0) as pg_ct
                        FROM message"]
                   {:builder-fn rs/as-unqualified-maps}))
+
+(defn get-visits []
+  (jdbc/execute! ds ["SELECT * FROM visit ORDER BY timestamp DESC"]))

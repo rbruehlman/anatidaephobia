@@ -139,6 +139,7 @@ yarn-error.log
 report.html
 .zprintrc
 .vscode/*
+.lsp
 
 # lein
 .lein-repl-history

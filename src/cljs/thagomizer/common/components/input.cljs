@@ -29,3 +29,24 @@
   "Sets the text field with the value submitted in the event"
   [update-event e]
   (rf/dispatch [update-event (target-value e)]))
+
+
+(defn button
+  [event key value & {:keys [elm-overrides style-overrides]}]
+  (let [style-defaults {:font-size 11
+                        :font-family "Gloria Hallelujah, cursive"
+                        :border "none"
+                        :text-align "center"
+                        :border-radius "15px"
+                        :padding "5px 8px 5px 8px"
+                        :margin "5px"
+                        :display "inline-block"
+                        :background-color "#EFEFEF"}
+        elm-defaults {:type "submit"
+                      :value value
+                      :onClick #(rf/dispatch event)
+                      :key key}]
+
+    [:button (assoc (merge elm-defaults elm-overrides)
+                       :style (merge style-defaults style-overrides))
+     value]))

@@ -3,29 +3,10 @@
    [thagomizer.db.queries :as q]
    [cheshire.core :refer [generate-string]]
    [thagomizer.utils :refer [json-to-map]]
-   [thagomizer.handler.routes.sns :as sns]
-   [ring.util.response :as response]))
+   [thagomizer.handler.routes.utils :as utils]
+   [thagomizer.aws.s3 :as s3]
+   [clojure.string :as str]))
 
-(defn send-nonadmin-message [data]
-  (sns/send-sms :b data))
-
-(defn send-admin-message [data]
-  (let [sent-already? (q/get-last-message-timestamp)
-        prompt (if sent-already?
-                 (q/get-last-prompt)
-                   (q/get-next-prompt))]
-    
-    (q/insert-message data (:id prompt))
-    
-    (if-not sent-already?
-      (sns/send-sms :c (:prompt prompt))
-      (response/status 200))))
-
-(defn send-message [func data]
-  (let [resp (func data)]
-    (if (or (contains? resp :MessageId) (= (:status resp) 200))
-    (response/status 200)
-    (response/status 500))))
 
 (defn new-message-handler [ring-req]
   (let [req   (json-to-map ring-req)
@@ -33,12 +14,21 @@
         data   (:data req)]
 
     (if admin
-      (send-message send-admin-message data)
-      (send-message send-nonadmin-message data))))
+      (utils/send-message utils/send-admin-message data)
+      (utils/send-message utils/send-nonadmin-message data))))
+
+(defn- is-image? [msg]
+  (str/includes? msg "images/"))
+
+(defn add-presigned-url [messages]
+  (map #(if (is-image? (:message %))
+                (update % :message s3/get-presigned-url)
+                %) messages))
 
 (defn display-message-handler [ring-req]
   (let [page (Integer/parseInt (get-in ring-req [:params :page]))
-        messages (q/get-messages page)]
+        messages (add-presigned-url (q/get-messages page))]
+    
     {:status  200
      :headers {"Content-Type" "application/json"}
      :body    (generate-string messages
