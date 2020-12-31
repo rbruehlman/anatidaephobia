@@ -8,8 +8,8 @@
                         :is-typing {:self false :others #{}}
                         :uids {}
                         :messages #queue []
-                        :camera {:stream {:visible false :loading false}
-                                 :photo {:visible false :loading false}
+                        :camera {:stream {:element nil :error nil}
+                                 :photo {:url nil :timer 0 :error nil}
                                  :modal false}}
                  :send {:authenticated nil
                         :text-field ""}

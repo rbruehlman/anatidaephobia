@@ -59,6 +59,6 @@
       [online-users]]
      [:div {:style {:margin "0 auto"}
             :key "buttons"}
-      ;;[button [::camera-events/camera-stream-and-modal] "img" "snap?"]
+      [button [::camera-events/camera-stream-and-modal] "img" "snap?"]
       [button [::sms-events/send-sms] "sms" "moo?"]]]
             )})))

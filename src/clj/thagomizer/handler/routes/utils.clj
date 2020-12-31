@@ -6,7 +6,6 @@
    [clojure.string :as str]
    [thagomizer.aws.s3 :as s3]))
 
-
 (defn is-image? [msg]
   (str/includes? msg "images/"))
 

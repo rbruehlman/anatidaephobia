@@ -16,14 +16,9 @@
 (rf/reg-sub
  ::photo
  (fn [db]
-   (camera-q/get-active-photo db)))
+   (camera-q/get-photo db)))
 
 (rf/reg-sub
- ::stream-loading-status
+ ::timer
  (fn [db]
-   (camera-q/get-stream-loading-status db)))
-
-(rf/reg-sub
- ::photo-loading-status
- (fn [db]
-   (camera-q/get-photo-loading-status db)))
+   (camera-q/get-timer db)))
