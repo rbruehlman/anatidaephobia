@@ -10,9 +10,8 @@
 
 (defn handle-video-success
   [db stream]
-  ;;(set! (.-srcObject (camera-q/get-element db)) stream)
-  (.log js/console (camera-q/get-element db))
-  ;;(.play (.-srcObject (camera-q/get-element db)))
+  (set! (.-srcObject (camera-q/get-element db)) stream)
+  (.play (.-srcObject (camera-q/get-element db)))
   db
   )
 
@@ -51,8 +50,7 @@
  ::camera-stream-and-modal
  (fn [cofx]
    {:db (:db cofx)
-    :fx [[:dispatch [::toggle-camera-modal true]]
-         [:dispatch [::get-media-stream]]]}))
+    :fx [[:dispatch [::toggle-camera-modal true]]]}))
 
 (rf/reg-event-db
  ::camera-element

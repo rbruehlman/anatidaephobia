@@ -6,6 +6,7 @@
             [thagomizer.common.funcs :as f-utils]
             [thagomizer.common.components.utils :as c-utils]
             [thagomizer.entry.subs.authentication :as auth-subs]
+            [thagomizer.common.components.accents :refer [header]]
             [clojure.string :as str]))
 
 (defn image-div [timestamp text]
@@ -16,7 +17,8 @@
   (let [paragraphs (map-indexed vector (c-utils/split-paragraph text))]
     (for [[i p] paragraphs]
       [:p
-       {:style {:margin-top "10px"}
+       {:style {:margin-top "10px"
+                :font-size 14}
         :key (str timestamp "-receipt-p" i)} p])))
 
 (defn all-message-div [messages]
@@ -134,5 +136,6 @@
 
     :reagent-render
     (fn []
+      [:<> [header]
       [:div [messages]
-       [paginate-buttons]])}))
+       [paginate-buttons]]])}))

@@ -47,6 +47,8 @@
                                 prompt_id,
                                 MAX(timestamp) as last_used
                              FROM message
+                           WHERE message.admin IS TRUE
+                               OR message.admin IS NULL
                              GROUP BY prompt_id
                              ORDER BY MAX(timestamp) ASC) last
                           ON prompt.id = last.prompt_id) as prompts
@@ -65,13 +67,14 @@
                       id    SERIAL PRIMARY KEY,
                       message    TEXT NOT NULL,
                       timestamp    TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                      admin    BOOL,
                       prompt_id    INT REFERENCES prompt(id)
                       );"]))
 
-(defn insert-message [message prompt_id]
-  (jdbc/execute! ds ["INSERT INTO message (message, prompt_id)
-                      VALUES (?, ?);"
-                     message prompt_id]))
+(defn insert-message [message prompt_id admin]
+  (jdbc/execute! ds ["INSERT INTO message (message, prompt_id, admin)
+                      VALUES (?, ?, ?);"
+                     message prompt_id admin]))
 
 (defn insert-image [image prompt_id]
   (jdbc/execute! ds ["INSERT INTO message (image, prompt_id)
@@ -104,6 +107,8 @@
                            max(timestamp) as timestamp
                          FROM visit) last_visit
                       ON message.timestamp >= last_visit.timestamp
+                      WHERE message.admin IS TRUE
+                         OR message.admin IS NULL
                       ORDER BY message.timestamp DESC
                       LIMIT 10
                       OFFSET ?::int" offset offset]
@@ -116,4 +121,7 @@
                   {:builder-fn rs/as-unqualified-maps}))
 
 (defn get-visits []
-  (jdbc/execute! ds ["SELECT * FROM visit ORDER BY timestamp DESC"]))
+  (jdbc/execute! ds ["SELECT
+                      *
+                      FROM visit
+                      ORDER BY timestamp DESC"]))

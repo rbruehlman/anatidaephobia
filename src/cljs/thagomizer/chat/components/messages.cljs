@@ -61,4 +61,5 @@
                        :key (str timestamp "-user")}
              (for [p (c-utils/split-paragraph (:msg msg))]
                [:p {:key (str timestamp "-p")
-                    :style {:font-style (msg-type-style msg)}} p])]]))]))}))
+                    :style {:font-size 14
+                            :font-style (msg-type-style msg)}} p])]]))]))}))

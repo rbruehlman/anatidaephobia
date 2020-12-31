@@ -1,4 +1,4 @@
-(ns thagomizer.entry.components.accents
+(ns thagomizer.common.components.accents
   (:require [thagomizer.common.components.utils :as c-utils]))
 
 (defn header []

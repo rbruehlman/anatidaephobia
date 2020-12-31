@@ -1,10 +1,10 @@
 (ns thagomizer.send.components
   (:require
    [thagomizer.common.components.input :refer [button target-value]]
+   [thagomizer.common.components.accents :refer [header]]
    [thagomizer.send.events :as events]
    [thagomizer.send.subs :as subs]
    [re-frame.core :as rf]
-   [reagent.core :as reagent]
    [thagomizer.common.components.utils :as c-utils]))
 
 
@@ -56,6 +56,7 @@
 
 (defn send-app []
   [:<>
+   [header]
    [:div {:key "input-text-field"}
     [input-text-field]]
    [:div {:style {:margin "10px auto"}

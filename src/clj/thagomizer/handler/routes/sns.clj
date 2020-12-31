@@ -8,4 +8,3 @@
     (if (get result :MessageId)
       (response/status 200)
       (response/status 500))))
-
