@@ -35,6 +35,10 @@
 
 
 (defn streaming-section [state]
+  
+  (rf/dispatch [::camera-events/set-stream])
+(rf/dispatch [::camera-events/set-timer 0])
+  ;; readd visibility, you moron
   [:<>
     [camera-stream state]
     [:div {:style {:display "flex"
@@ -79,20 +83,10 @@
                   :dangerouslySetInnerHTML {:__html "&times;"}
                   :style {:float "right"
                           :margin-right "35px"}}]]
-     
-     (cond 
-      (and (nil? @camera-stream) (nil? @photo))
-       (do
-         (println "hello!")
-         (rf/dispatch [::camera-events/set-stream])
-         (rf/dispatch [::camera-events/set-timer 0])
-         [streaming-section state])
-       @camera-stream
-        [photo-section state @camera-stream]
-       :else
-       (do
-         (rf/dispatch [::camera-events/set-timer 0])
-         [streaming-section state])
+     (cond
+       (and (nil? @camera-stream) (nil? @photo))
+       [streaming-section state]
+       :else [streaming-section state]
        )]))
     
      
