@@ -15,7 +15,7 @@ RUN --mount=type=secret,id=aws,target=/root/.aws/credentials lein uberjar
 
 RUN mv /app/target/thagomizer.jar ./thagomizer.jar
 
-EXPOSE 5000
+EXPOSE 8000
 
 CMD ["java", "-jar", "thagomizer.jar"]
 

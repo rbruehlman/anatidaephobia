@@ -1,3 +1,4 @@
+version: "2"
 services:
     nginx:
         image: nginx:1.13.7
@@ -6,7 +7,8 @@ services:
             - thagomizer
         volumes:
             - ./nginx.conf:/etc/nginx/conf.d/default.conf
-            - /etc/letsencrypt/live/thethagomizer.com/:/etc/nginx/certs/
+            - /etc/letsencrypt/live/thethagomizer.com/:/etc/letsencrypt/live/thethagomizer.com/
+            - /etc/letsencrypt/archive/thethagomizer.com/:/etc/letsencrypt/archive/thethagomizer.com/
         networks:
             - thagomizer-network
         ports:
@@ -26,7 +28,7 @@ services:
                 aliases:
                     - thagomizer
         ports:
-            - 8080:8000
+            - 8000:8000
 
 networks:
     thagomizer-network:
