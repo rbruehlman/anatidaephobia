@@ -1,0 +1,32 @@
+services:
+    nginx:
+        image: nginx:1.13.7
+        container_name: nginx
+        depends_on:
+            - thagomizer
+        volumes:
+            - ./nginx.conf:/etc/nginx/conf.d/default.conf
+            - /etc/letsencrypt/live/thethagomizer.com/:/etc/nginx/certs/
+        networks:
+            - thagomizer-network
+        ports:
+            - 80:80
+            - 443:443
+    thagomizer:
+        build:
+            context: ./
+            dockerfile: Dockerfile
+        container_name: thagomizer
+        volumes:
+            - ~/.aws/:/root/.aws/
+        env_file:
+            - .env
+        networks:
+            thagomizer-network:
+                aliases:
+                    - thagomizer
+        ports:
+            - 8080:8000
+
+networks:
+    thagomizer-network:

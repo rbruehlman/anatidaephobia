@@ -17,7 +17,7 @@
       (utils/send-message utils/send-nonadmin-message data))))
 
 (defn add-presigned-url [messages]
-  (map #(if (utils/is-image? (:message %))
+  (map #(if (utils/is-s3-image? (:message %))
                 (update % :message s3/get-presigned-url)
                 %) messages))
 

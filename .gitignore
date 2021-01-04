@@ -146,4 +146,4 @@ report.html
 resources/public/cljs-runtime/
 resources/public/main.js
 
-env.sh
+.env

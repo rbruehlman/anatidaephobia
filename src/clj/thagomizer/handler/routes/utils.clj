@@ -6,11 +6,11 @@
    [clojure.string :as str]
    [thagomizer.aws.s3 :as s3]))
 
-(defn is-image? [msg]
+(defn is-s3-image? [msg]
   (str/includes? msg "images/"))
 
 (defn send-nonadmin-message [msg]
-  (q/insert-message (if (is-image? msg)
+  (q/insert-message (if (is-s3-image? msg)
                                    (s3/get-presigned-url msg)
                                    msg) nil false)
   (sns/send-sms :b msg))

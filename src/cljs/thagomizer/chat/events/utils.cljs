@@ -10,9 +10,9 @@
    time))
 
 (rf/reg-fx
- :timeout-fx
+ ::timeout-fx
  (fn [args]
    (if (= (type args) map)
-     (timeout (:event args) (:time args))
+     (timeout (:event args) (:timeout args))
      (doseq [event args]
-       (timeout (:event event) (:time event))))))
+       (timeout (:event event) (:timeout event))))))
