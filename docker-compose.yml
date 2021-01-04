@@ -15,9 +15,7 @@ services:
             - 80:80
             - 443:443
     thagomizer:
-        build:
-            context: ./
-            dockerfile: Dockerfile
+        image: rbruehlman/thagomizer:latest
         container_name: thagomizer
         volumes:
             - ~/.aws/:/root/.aws/
