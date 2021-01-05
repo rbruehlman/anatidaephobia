@@ -74,4 +74,4 @@
 (rf/reg-event-fx
  ::handle-img-failure
  (fn [_ [_ response]]
-   (js/alert (str "Houston, we have a problem..." response))))
+   (js/alert (str "Houston, we have a problem..."))))
