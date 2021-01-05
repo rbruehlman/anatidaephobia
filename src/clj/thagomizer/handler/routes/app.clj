@@ -13,7 +13,8 @@
           [:link {:href "https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap"
                   :rel "stylesheet"}]
           [:link {:href "https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css"
-                  :rel "stylesheet"}]]
+                  :rel "stylesheet"}]
+          [:style "body {margin:0; padding:0}"]] ;; I HAVE TRIUMPHED, CSS.  hate you hate you hate you
          [:body
           [:div {:class "container"}
            (let [csrf-token
@@ -21,3 +22,4 @@
              [:div#sente-csrf-token {:data-csrf-token csrf-token}])
            [:div#app]
            [:script {:src "main.js"}]]]))
+

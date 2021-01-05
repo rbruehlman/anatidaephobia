@@ -22,5 +22,5 @@
 
 (rf/reg-event-fx
  ::handle-sms-failure
- (fn [_ [_ response]]
-   (js/alert (str "Houston, we have a problem..." response))))
+ (fn [_]
+   (js/alert (str "Houston, we have a problem..."))))

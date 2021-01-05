@@ -85,7 +85,9 @@
   (:same_day
    (jdbc/execute-one! ds ["SELECT
                            MAX(timestamp::DATE) = NOW()::DATE as same_day
-                           FROM message"])
+                           FROM message
+                           WHERE admin IS TRUE
+                             OR admin IS NULL"])
    {:builder-fn rs/as-unqualified-maps}))
 
 (defn get-messages [page]

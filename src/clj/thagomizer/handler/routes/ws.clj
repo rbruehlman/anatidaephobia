@@ -57,7 +57,8 @@
   :thagomizer/message
   [{:as _ev-msg :keys [?data uid]}]
   (let [msg ?data
-        type "text"]
+        type (if (str/includes? msg "blob:http") "image" "text")]
+    (println ?data)
     (publish-to-all :thagomizer/message (message-data uid msg type))))
 
 (defmethod -event-msg-handler
