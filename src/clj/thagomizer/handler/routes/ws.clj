@@ -2,6 +2,7 @@
   (:require
    [clojure.string :as str]
    [ring.middleware.defaults]
+   [thagomizer.aws.s3 :as s3]
    [taoensso.timbre :as timbre :refer (debugf)]
    [thagomizer.ws :as ws]))
 
@@ -56,9 +57,8 @@
 (defmethod -event-msg-handler
   :thagomizer/message
   [{:as _ev-msg :keys [?data uid]}]
-  (let [msg ?data
-        type (if (str/includes? msg "blob:http") "image" "text")]
-    (println ?data)
+  (let [type (:type ?data)
+        msg (:msg ?data)]
     (publish-to-all :thagomizer/message (message-data uid msg type))))
 
 (defmethod -event-msg-handler
@@ -66,8 +66,7 @@
   [{:as _ev-msg :keys [uid ring-req]}]
   (publish :thagomizer/login
            {:self-uid uid :uids (:any @ws/connected-uids)} [uid])
-  (publish-to-others :thagomizer/new-user uid ring-req)
-  )
+  (publish-to-others :thagomizer/new-user uid ring-req))
 
 (defmethod -event-msg-handler
   :chsk/uidport-close

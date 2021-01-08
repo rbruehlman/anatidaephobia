@@ -7,9 +7,9 @@
    [thagomizer.chat.ws.client :as ws-client]))
 
 (rf/reg-event-db
- ::set-photo-url
- (fn [db [_ url]]
-   (photo-q/set-photo-url db url)))
+ ::set-photo-data
+ (fn [db [_ data]]
+   (photo-q/set-photo-data db data)))
 
 (rf/reg-event-fx
  ::take-photo
@@ -22,8 +22,7 @@
 
      (-> image-capture
          (.takePhoto)
-         (.then #(.createObjectURL js/URL %))
-         (.then #(rf/dispatch [::set-photo-url %]))
+         (.then #(rf/dispatch [::set-photo-data %]))
          (.catch #(.log js/console %)))
 
      {})))
@@ -48,6 +47,14 @@
  ::send-photo
  (fn [cofx]
    (let [db  (:db cofx)
-         photo (photo-q/get-photo-url db)]
-     (ws-client/chsk-send! [:thagomizer/message photo] 500))
-   {:dispatch [::modal-events/toggle-camera-modal false]}))
+         photo (photo-q/get-photo-data db)
+         reader (js/FileReader.)]
+     
+     (.readAsArrayBuffer reader photo)
+     (set! (.-onload reader) #(ws-client/chsk-send! [:thagomizer/message {:msg (js->clj 
+                                                                                (.from js/Array 
+                                                                                       (js/Uint8Array.
+                                                                                        (.-result reader))))
+                                                                          :type "image"}] 500))
+     
+   {:dispatch [::modal-events/toggle-camera-modal false]})))

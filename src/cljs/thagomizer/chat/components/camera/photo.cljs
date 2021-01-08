@@ -6,10 +6,10 @@
    [thagomizer.common.components.input :refer [button]]))
 
 (defn photo-section []
-  (let [photo-url @(rf/subscribe [::photo-subs/photo-url])]
+  (let [photo-data @(rf/subscribe [::photo-subs/photo-data])]
 
     [:div
-     [:img {:src photo-url
+     [:img {:src (.createObjectURL js/URL photo-data)
             :on-load #(rf/dispatch [::photo-events/set-photo-loading-status :loaded])
             :style {:max-width "80%"
                     :max-height "80%"

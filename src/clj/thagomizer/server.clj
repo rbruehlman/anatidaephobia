@@ -57,8 +57,7 @@
         (let [stop-fn (http-kit/run-server ring-handler {:port port})]
           [(:local-port (meta stop-fn)) (fn [] (stop-fn :timeout 100))])
         uri (format "http://0.0.0.0:%s/" port)]
-    (println (str "Running on "  (format "http://0.0.0.0:%s/" port))
-)
+    (println (str "Running on "  (format "http://0.0.0.0:%s/" port)))
     (try
       (.browse (java.awt.Desktop/getDesktop) (java.net.URI. uri))
       (catch java.awt.HeadlessException _))

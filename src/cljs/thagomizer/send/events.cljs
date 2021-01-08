@@ -5,7 +5,8 @@
    [ajax.core :as ajax]
    [thagomizer.send.queries :as q]
    [thagomizer.entry.queries.authentication :as auth-q]
-   [thagomizer.common.funcs :refer [?csrf-token]]))
+   [thagomizer.common.funcs :refer [?csrf-token]]
+   [thagomizer.common.events :refer [generate-form-data]]))
 
 
 (rf/reg-event-db
@@ -42,11 +43,6 @@
  (fn []
    (js/alert (str "Houston, we have a problem..."))))
 
-(defn generate-form-data [params]
-  (let [form-data (js/FormData.)]
-    (doseq [[k v] params]
-      (.append form-data (name k) v))
-    form-data))
 
 (rf/reg-event-fx
  ::upload-photo
@@ -68,10 +64,10 @@
 
 (rf/reg-event-fx
  ::handle-img-success
- (fn [_ [_ response]]
+ (fn [_]
    (js/alert "Snap!")))
 
 (rf/reg-event-fx
  ::handle-img-failure
- (fn [_ [_ response]]
+ (fn [_]
    (js/alert (str "Houston, we have a problem..."))))

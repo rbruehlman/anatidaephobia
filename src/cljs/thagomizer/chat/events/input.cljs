@@ -38,5 +38,5 @@
        (js/alert "Can't send a blank message!")
        (do
          (ws-client/chsk-send! [:thagomizer/typing-status {(keyword self) is-typing?}] 500)
-         (ws-client/chsk-send! [:thagomizer/message  msg] 500)
+         (ws-client/chsk-send! [:thagomizer/message  {:msg msg :type "text"}] 500)
          (rf/dispatch [::update-text-field ""]))))))

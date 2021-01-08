@@ -4,14 +4,14 @@
    [thagomizer.chat.queries.camera.photo :as photo-q]))
 
 (rf/reg-sub
- ::photo-url
+ ::photo-data
  (fn [db]
-   (photo-q/get-photo-url db)))
+   (photo-q/get-photo-data db)))
 
 (rf/reg-sub
  ::photo-visibility
  (fn [_]
-   (rf/subscribe [::photo-url]))
+   (rf/subscribe [::photo-data]))
  (fn [url]
    (not (nil? url))))
 

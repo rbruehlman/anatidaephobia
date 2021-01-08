@@ -6,10 +6,10 @@
 (defn get-photo-visibility [db]
   (get-in db [:chat :camera :photo :visible]))
 
-(defn set-photo-url [db url]
+(defn set-photo-data [db url]
   (assoc-in db [:chat :camera :photo :url] url))
 
-(defn get-photo-url [db]
+(defn get-photo-data [db]
   (get-in db [:chat :camera :photo :url]))
 
 (defn set-photo-error [db error]
@@ -29,4 +29,4 @@
       (set-photo-visibility false)
       (set-photo-loading-status nil)
       (set-photo-error nil)
-      (set-photo-url nil)))
+      (set-photo-data nil)))
