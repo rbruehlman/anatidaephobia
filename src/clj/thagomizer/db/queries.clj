@@ -82,9 +82,9 @@
                      image prompt_id]))
 
 (defn get-last-message-timestamp []
-  (:same_day
+  (:recent
    (jdbc/execute-one! ds ["SELECT
-                           MAX(timestamp::DATE) = NOW()::DATE as same_day
+                           (MAX(timestamp::DATE) + INTERVAL '3 hours') < NOW()::DATE as recent
                            FROM message
                            WHERE admin IS TRUE
                              OR admin IS NULL"])
