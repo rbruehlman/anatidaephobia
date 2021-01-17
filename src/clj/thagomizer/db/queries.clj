@@ -84,7 +84,7 @@
 (defn get-last-message-timestamp []
   (:recent
    (jdbc/execute-one! ds ["SELECT
-                           (MAX(timestamp::DATE) + INTERVAL '3 hours') < NOW()::DATE as recent
+                           (MAX(timestamp::DATE) + INTERVAL '3 hours') > NOW()::DATE as recent
                            FROM message
                            WHERE admin IS TRUE
                              OR admin IS NULL"])
