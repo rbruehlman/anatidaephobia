@@ -16,16 +16,17 @@
   (sns/send-sms :b msg))
 
 (defn send-admin-message [msg]
-  (let [sent-already? (q/get-last-message-timestamp)
+  (let [sent-already? (q/message-recently-sent?)
         prompt (if sent-already?
-                 (q/get-last-prompt)
+                 nil
                  (q/get-next-prompt))]
 
     (q/insert-message msg (:id prompt) true)
 
-    (if-not sent-already?
+    (if sent-already?
+      (response/status 200)
       (sns/send-sms :c (:prompt prompt))
-      (response/status 200))))
+      )))
 
 (defn send-message [func msg]
   (let [resp (func msg)]

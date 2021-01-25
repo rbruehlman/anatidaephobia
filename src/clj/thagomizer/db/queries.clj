@@ -27,9 +27,8 @@
   (jdbc/execute! ds ["INSERT INTO visit (timestamp)
                      VALUES (DEFAULT);"]))
 
-(defn- get-prompt [order]
-  (jdbc/execute-one! ds [(str 
-                          "SELECT
+(defn get-next-prompt []
+  (jdbc/execute-one! ds ["SELECT
                           id,
                           prompt,
                           last_used
@@ -47,20 +46,15 @@
                                 prompt_id,
                                 MAX(timestamp) as last_used
                              FROM message
-                           WHERE message.admin IS TRUE
-                               OR message.admin IS NULL
+                             WHERE (message.admin IS TRUE
+                                   OR message.admin IS NULL)
+                             AND message.prompt_id IS NOT NULL
                              GROUP BY prompt_id
                              ORDER BY MAX(timestamp) ASC) last
                           ON prompt.id = last.prompt_id) as prompts
-                        ORDER BY last_used " order
-                        " LIMIT 1")]
-                   {:builder-fn rs/as-unqualified-maps}))
-
-(defn get-last-prompt []
-  (get-prompt "DESC"))
-
-(defn get-next-prompt []
-  (get-prompt "ASC"))
+                        ORDER BY last_used ASC
+                        LIMIT 1"]
+                     {:builder-fn rs/as-unqualified-maps}))
 
 (defn create-message-table []
   (jdbc/execute! ds ["CREATE TABLE IF NOT EXISTS message (
@@ -81,13 +75,14 @@
                       VALUES (?, ?);"
                      image prompt_id]))
 
-(defn get-last-message-timestamp []
+(defn message-recently-sent? []
   (:recent
    (jdbc/execute-one! ds ["SELECT
-                           (MAX(timestamp::DATE) + INTERVAL '3 hours') > NOW()::DATE as recent
+                           (MAX(timestamp) + INTERVAL '3 hours') > NOW() as recent
                            FROM message
-                           WHERE admin IS TRUE
-                             OR admin IS NULL"])
+                           WHERE (admin IS TRUE
+                                  OR admin IS NULL)
+                           AND message.prompt_id IS NOT NULL"])
    {:builder-fn rs/as-unqualified-maps}))
 
 (defn get-messages [page]
