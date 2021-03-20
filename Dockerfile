@@ -4,6 +4,7 @@ FROM theasp/clojurescript-nodejs:alpine as build
 WORKDIR /app
 COPY package.json package-lock.json yarn.lock project.clj ./
 
+RUN npm config set registry http://registry.npmjs.org/  
 RUN npm install
 
 COPY . .

@@ -724,14 +724,6 @@ cliui@^5.0.0:
     strip-ansi "^5.2.0"
     wrap-ansi "^5.1.0"
 
-clj-kondo@2020.01.13:
-  version "2020.1.13"
-  resolved "https://nexus.exelator.net/repository/npm-all/clj-kondo/-/clj-kondo-2020.1.13.tgz#bffe0dde83169f3b7a605f459f835cbf90ef9347"
-  integrity sha512-hLKi4toY3UFe1WnuX/HGr2e3PWEt4++7286Jiv/nyBoy1zcEopz7k+e0XnjX5GkxFUgXv1KrIyHQ3eM4+iW2dw==
-  dependencies:
-    binwrap "^0.2.2"
-    request "^2.88.0"
-
 clone-response@^1.0.2:
   version "1.0.2"
   resolved "https://nexus.exelator.net/repository/npm-all/clone-response/-/clone-response-1.0.2.tgz#d1dc973920314df67fbeb94223b4ee350239e96b"
