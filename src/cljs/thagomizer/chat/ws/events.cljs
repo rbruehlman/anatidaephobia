@@ -5,7 +5,8 @@
    [thagomizer.chat.ws.utils :as ws-utils]
    [thagomizer.chat.events.typing :as typing-events]
    [thagomizer.chat.events.messages :as message-events]
-   [thagomizer.chat.events.uids :as uid-events]))
+   [thagomizer.chat.events.uids :as uid-events]
+   [thagomizer.chat.events.visibility :as visibility-events]))
 
 (defmulti -event-msg-handler
   "Multimethod to handle Sente `event-msg`s"
@@ -31,7 +32,9 @@
   (let [[event-id {:keys [msg]}] ?data]
     (cond
       (= event-id :thagomizer/message)
-      (rf/dispatch [::message-events/set-latest-message (second ?data)])
+      (do
+        (rf/dispatch [::message-events/set-latest-message (second ?data)])
+        (rf/dispatch [::visibility-events/play-sound]))
       (= event-id :thagomizer/typing-status)
       (rf/dispatch [::typing-events/set-typing-status msg])
       (= event-id :thagomizer/new-user)

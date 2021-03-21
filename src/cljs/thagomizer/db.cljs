@@ -5,6 +5,7 @@
                  :chat {:authenticated nil
                         :uid nil
                         :text-field ""
+                        :hidden false
                         :is-typing {:self false
                                     :others #{}}
                         :uids {}

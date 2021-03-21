@@ -36,7 +36,7 @@
  (fn [db [_ msg]]
    (let [lost-uid (keyword msg)
          messages (message-q/get-messages db)
-         admin (auth-q/get-admin-status db)]
-      (if admin
+         admin? (auth-q/get-admin-status db)]
+      (if admin?
         (message-q/update-former-uid-msgs db lost-uid messages)
         (message-q/remove-former-uid-msgs db lost-uid messages)))))

@@ -13,6 +13,7 @@
    [thagomizer.chat.components.camera.modal :refer [modal-background]]
    [thagomizer.chat.subs.camera.modal :as modal-subs]
    [thagomizer.chat.events.camera.modal :as modal-events]
+   [thagomizer.chat.events.visibility :as visibility-events]
    [thagomizer.common.components.utils :as c-utils]))
 
 (defn get-client-rect [node]
@@ -29,6 +30,8 @@
 
 (defn chat-app []
   (let [state (r/atom {})]
+    
+    (visibility-events/set-visibility-listener)
 
     (r/create-class
      {:component-did-mount
