@@ -4,7 +4,8 @@
    [thagomizer.chat.queries.visibility :as visibility-q]
    [thagomizer.entry.queries.authentication :as auth-q]))
 
-(def audio (new js/Audio "notification2.mp3"))
+(def audio 
+  (new js/Audio "audio/notification3.mp3"))
 
 (rf/reg-event-db
  ::set-hidden-value
@@ -38,5 +39,6 @@
   (let [db (:db cofx)
         hidden? (visibility-q/get-hidden-value db)
         admin? (auth-q/get-admin-status db)]
-    (when (and (hidden?) admin?)
-      (.play audio)))))
+    (when (and hidden? admin?)
+      (.play audio))
+    {})))

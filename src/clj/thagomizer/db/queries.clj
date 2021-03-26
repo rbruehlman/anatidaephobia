@@ -119,6 +119,16 @@
 
 (defn get-visits []
   (jdbc/execute! ds ["SELECT
-                      *
+                        *
                       FROM visit
                       ORDER BY timestamp DESC"]))
+
+(defn get-latest-text-messages []
+  (jdbc/execute! ds ["SELECT
+                        message.id,
+                        message.timestamp,
+                        message.message
+                        FROM message
+                      WHERE message.admin is False
+                      ORDER BY message.timestamp DESC
+                      LIMIT 10"]))
