@@ -14,3 +14,11 @@
      (if (= typer self)
        (typing-q/set-self-typing-status db status)
        (typing-q/set-others-typing-status db typer status)))))
+
+;;We should use this when someone leaves
+(rf/reg-event-db
+ ::clear-typing-status
+ (fn [db [_ msg]]
+   (let [lost-uid (keyword msg)]
+     (typing-q/set-others-typing-status db lost-uid false))))
+

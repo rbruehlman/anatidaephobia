@@ -46,7 +46,8 @@
       (= event-id :thagomizer/lost-user)
       (do
         (rf/dispatch [::message-events/handle-inactive-user-messages msg])
-        (rf/dispatch [::uid-events/remove-uid msg]))
+        (rf/dispatch [::uid-events/remove-uid msg])
+        (rf/dispatch [::typing-events/clear-typing-status msg]))
       :else (ws-utils/->output! (str "Shit went sideways" event-id)))))
 
 (defmethod -event-msg-handler :thagomizer/message
