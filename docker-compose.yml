@@ -7,7 +7,7 @@ services:
             - thagomizer
         volumes:
             - ./nginx.conf:/etc/nginx/conf.d/default.conf
-            - ./resources/public/:./resources/public/
+            - ./resources/public/:/var/www/thagomizer/resources/public/
             - /etc/letsencrypt/live/thethagomizer.com/:/etc/letsencrypt/live/thethagomizer.com/
             - /etc/letsencrypt/archive/thethagomizer.com/:/etc/letsencrypt/archive/thethagomizer.com/
         networks:
