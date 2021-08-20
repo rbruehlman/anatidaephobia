@@ -43,7 +43,6 @@
  (fn []
    (js/alert (str "Houston, we have a problem..."))))
 
-
 (rf/reg-event-fx
  ::upload-photo
  (fn [cofx [_ img]]
@@ -51,7 +50,6 @@
          admin (auth-q/get-admin-status db)
          form-data (generate-form-data {:file img
                                         :admin admin})]
-     
        {:http-xhrio {:method :post
                      :uri "/images"
                      :body form-data
