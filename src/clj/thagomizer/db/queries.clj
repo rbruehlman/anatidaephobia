@@ -78,7 +78,7 @@
 (defn message-recently-sent? []
   (:recent
    (jdbc/execute-one! ds ["SELECT
-                           (MAX(timestamp) + INTERVAL '3 hours') > NOW() as recent
+                           (MAX(timestamp) + INTERVAL '1 minute') > NOW() as recent
                            FROM message
                            WHERE (admin IS TRUE
                                   OR admin IS NULL)
