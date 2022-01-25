@@ -17,6 +17,14 @@
           :style {:width "50%"
                   :margin "auto"}}]])
 
+(defn out-of-order []
+  [:<>
+   [header]
+   [:p {:style (merge {:font-size 25} c-utils/center-css)} "Check back next week!"]
+   [:img {:src "https://i.pinimg.com/474x/da/b4/8c/dab48ccccd222438e2abdf98e3d284df--comic-book.jpg"
+          :style {:width "50%"
+                  :margin "auto"}}]])
+
 (defn app []
   (let [authenticated  @(rf/subscribe [::authentication-subs/authentication])
         auth-chat      @(rf/subscribe [::authentication-subs/authorized-mode :chat])
@@ -36,7 +44,7 @@
        (true? auth-receipt)
        [receipt-app]
        (true? auth-send)
-       [send-app]
+       [out-of-order]
        :else
        [:<>
         [header]
