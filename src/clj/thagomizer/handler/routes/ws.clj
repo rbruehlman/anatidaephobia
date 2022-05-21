@@ -2,7 +2,6 @@
   (:require
    [clojure.string :as str]
    [ring.middleware.defaults]
-   [thagomizer.aws.s3 :as s3]
    [taoensso.timbre :as timbre :refer (debugf)]
    [thagomizer.ws :as ws]))
 

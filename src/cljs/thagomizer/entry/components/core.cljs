@@ -21,7 +21,9 @@
   (let [authenticated  @(rf/subscribe [::authentication-subs/authentication])
         auth-chat      @(rf/subscribe [::authentication-subs/authorized-mode :chat])
         auth-receipt   @(rf/subscribe [::authentication-subs/authorized-mode :receipt])
-        auth-send      @(rf/subscribe [::authentication-subs/authorized-mode :send])]
+        auth-send      @(rf/subscribe [::authentication-subs/authorized-mode :send])
+        day    (.getDay (new js/Date))]
+    
     [:div#flex-container
      {:style (merge {:width "60%"
                      :flex-flow "column"

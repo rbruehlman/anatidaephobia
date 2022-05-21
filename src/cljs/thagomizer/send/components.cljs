@@ -5,6 +5,7 @@
    [thagomizer.send.events :as events]
    [thagomizer.send.subs :as subs]
    [re-frame.core :as rf]
+   [reagent.core :as r]
    [thagomizer.common.components.utils :as c-utils]))
 
 
@@ -55,6 +56,10 @@
    ])
 
 (defn send-app []
+  (r/create-class
+     {:component-did-mount #(rf/dispatch [::events/load-draft])
+   :reagent-render
+      (fn []
   [:<>
    [header]
    [:div {:key "input-text-field"}
@@ -63,4 +68,5 @@
           :key "buttons"}
     [img-button]
     [button [::events/send-message] "sms" "moo?"]
-    ]])
+    ]])}
+))

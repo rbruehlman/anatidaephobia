@@ -34,18 +34,13 @@
 
 (rf/reg-event-fx
  ::register-visit
- (defn register-visit []
+ (fn []
    {:http-xhrio {:method :post
                  :uri "/visits"
                  :headers {:X-CSRF-Token ?csrf-token}
                  :format (ajax/json-request-format)
                  :response-format (ajax/text-response-format)
-                 :on-success [::handle-visit-success]
                  :on-failure [::handle-visit-failure]}}))
-
-(rf/reg-event-db
- ::handle-visit-success
- (fn [] ))
 
 (rf/reg-event-fx
  ::handle-visit-failure

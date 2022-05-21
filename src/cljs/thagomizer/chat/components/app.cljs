@@ -14,7 +14,9 @@
    [thagomizer.chat.subs.camera.modal :as modal-subs]
    [thagomizer.chat.events.camera.modal :as modal-events]
    [thagomizer.chat.events.visibility :as visibility-events]
-   [thagomizer.common.components.utils :as c-utils]))
+   [thagomizer.chat.events.bailing :as bailing-events]
+   [thagomizer.common.components.utils :as c-utils]
+   [thagomizer.entry.subs.authentication :as auth-subs]))
 
 (defn get-client-rect [node]
   (let [r (.getBoundingClientRect node)]
@@ -29,7 +31,8 @@
   (reset! state (get-client-rect (rdom/dom-node this))))
 
 (defn chat-app []
-  (let [state (r/atom {})]
+  (let [state (r/atom {})
+        keystrokes (r/atom {})]
     
     (visibility-events/set-visibility-listener)
 
@@ -39,7 +42,9 @@
         (.addEventListener js/window "resize" #(handler state this))
         (set! (.-onresize js/window)
               (r/force-update this))
-        (handler state this))
+        (handler state this)
+        (.addEventListener js/window "keyup" #(bailing-events/handle-key-press % keystrokes))
+        (.addEventListener js/window "keydown" #(bailing-events/handle-key-press % keystrokes)))
 
       :component-will-unmount
       (fn [this]
@@ -47,7 +52,8 @@
 
       :reagent-render
       (fn []
-        (let [visible-camera-modal (rf/subscribe [::modal-subs/camera-modal])]
+        (let [visible-camera-modal @(rf/subscribe [::modal-subs/camera-modal])
+              admin? @(rf/subscribe [::auth-subs/admin-status])]
 
           [:div#flex-container {:ref #(when % (partial handler state %))
                                 :style (merge {:flex-flow "column"
@@ -57,7 +63,7 @@
                                                :width "100%"} c-utils/center-css)}
            [header]
            [messages]
-           (when @visible-camera-modal
+           (when visible-camera-modal
              [modal-background state])
            [:div {:key "typing-indicator"}
             [typing-indicator]]
@@ -68,4 +74,5 @@
            [:div {:style {:margin "0 auto"}
                   :key "buttons"}
             [button [::modal-events/toggle-camera-modal true] "img" "snap?"]
-            [button [::sms-events/send-sms] "sms" "moo?"]]]))})))
+            [button [::sms-events/send-sms] "sms" "moo?"]
+            (when-not admin? [button [::bailing-events/bail] "bail" "bail!"])]]))})))

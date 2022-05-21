@@ -147,3 +147,4 @@ resources/public/cljs-runtime/
 resources/public/main.js
 
 .env
+.idea/

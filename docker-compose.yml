@@ -15,9 +15,20 @@ services:
         ports:
             - 80:80
             - 443:443
+    redis:
+        image: redis:latest
+        container_name: redis
+        networks:
+            thagomizer-network:
+                aliases:
+                    - redis
+        ports:
+            - 6379:6379
     thagomizer:
         image: rbruehlman/thagomizer:latest
         container_name: thagomizer
+        depends_on:
+            - redis
         volumes:
             - ~/.aws/:/root/.aws/
         env_file:
