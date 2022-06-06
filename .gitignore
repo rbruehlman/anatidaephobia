@@ -148,3 +148,4 @@ resources/public/main.js
 
 .env
 .idea/
+run.sh

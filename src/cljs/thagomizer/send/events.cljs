@@ -80,14 +80,15 @@
  ::save-draft
  (fn [cofx]
    (let [db  (:db cofx)]
-     {:http-xhrio {:method :post
-                   :uri "/draft"
-                   :params (q/get-text-field db)
-                   :headers {:X-CSRF-Token ?csrf-token}
-                   :format (ajax/text-request-format)
-                   :response-format (ajax/text-response-format)
-                   :on-success [::handle-save-draft-success]
-                   :on-failure [::handle-save-draft-failure]}})))
+     (when-not (auth-q/get-admin-status db)
+       {:http-xhrio {:method :post
+                     :uri "/draft"
+                     :params (q/get-text-field db)
+                     :headers {:X-CSRF-Token ?csrf-token}
+                     :format (ajax/text-request-format)
+                     :response-format (ajax/text-response-format)
+                     :on-success [::handle-save-draft-success]
+                     :on-failure [::handle-save-draft-failure]}}))))
 
 
 
@@ -104,12 +105,14 @@
 (rf/reg-event-fx
  ::load-draft
  (fn [cofx]
-   {:http-xhrio {:method :get
-                 :uri "/draft"
-                 :headers {:X-CSRF-Token ?csrf-token}
-                 :response-format (ajax/text-response-format)
-                 :on-success [::handle-get-draft-success]
-                 :on-failure [::handle-get-draft-failure]}}))
+   (let [db  (:db cofx)]
+     (when-not (auth-q/get-admin-status db)
+       {:http-xhrio {:method :get
+                     :uri "/draft"
+                     :headers {:X-CSRF-Token ?csrf-token}
+                     :response-format (ajax/text-response-format)
+                     :on-success [::handle-get-draft-success]
+                     :on-failure [::handle-get-draft-failure]}}))))
 
 (rf/reg-event-db
  ::handle-get-draft-success
