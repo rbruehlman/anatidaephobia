@@ -1,7 +1,8 @@
 (ns thagomizer.redis
   (:require [taoensso.carmine :as car :refer (wcar)]))
 
-(def redis-conn {:pool {} :spec {:uri "redis://localhost:6379/"}})
+;; change to redis://localhost:6379/ if running locally
+(def redis-conn {:pool {} :spec {:uri "redis://redis:6379/"}})
 (defmacro wcar* [& body] `(car/wcar redis-conn ~@body))
 
 (defn save-draft [data]

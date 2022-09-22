@@ -24,7 +24,7 @@
     :else nil))
 
 (defn is-mobile []
-  (f-utils/not-nil? (.match (.-userAgent js/navigator) #"(?i)iPhone")))
+  (f-utils/not-nil? (.match (.-userAgent js/navigator) #"(?i)Mozilla")))
 
 (defn handle-visibility-change []
   (rf/dispatch [::set-hidden-value (is-hidden?)]))
@@ -34,16 +34,12 @@
  (fn [cofx]
    (let [db (:db cofx)
          admin? (auth-q/get-admin-status db)]
-     (.log js/console (and
-                       (is-hidden?)
-                       (not admin?)
-                       (not is-mobile)))
      (when (and
             (is-hidden?)
             (not admin?)
             (is-mobile))
-       (.close js/window))
-     {})))
+       (.replace (.-location js/window) "https://www.espn.com")
+     {}))))
 
 
 (defn handle-visibility-quit []
