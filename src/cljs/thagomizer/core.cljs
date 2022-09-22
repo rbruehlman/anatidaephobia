@@ -2,7 +2,7 @@
   (:require
    [reagent.dom :as rdom]
    [re-frame.core :as rf]
-   [thagomizer.common.events :as events]
+   [thagomizer.common.events.etc :as events]
    [thagomizer.chat.ws.client :as client]
    [thagomizer.config :as config]
    [thagomizer.chat.ws.events :as ws-events]

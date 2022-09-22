@@ -6,7 +6,7 @@
    [thagomizer.send.queries :as q]
    [thagomizer.entry.queries.authentication :as auth-q]
    [thagomizer.common.funcs :refer [?csrf-token]]
-   [thagomizer.common.events :refer [generate-form-data]]))
+   [thagomizer.common.events.etc :refer [generate-form-data]]))
 
 (rf/reg-event-fx
  ::update-text-field

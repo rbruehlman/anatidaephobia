@@ -9,31 +9,6 @@
     (set! (.-crossOrigin sound) "anonymous")
     sound))
 
-(rf/reg-event-db
- ::set-hidden-value
- (fn [db [_ value]]
-   (visibility-q/set-hidden-value db value)))
-
-(defn is-hidden? []
-  (or (.-hidden js/document)
-      (.-msHidden js/document)
-      (.-webkitHidden js/document)))
-
-(def visibility-type
-  (cond
-    (exists? (.-hidden js/document))  "visibilitychange"
-    (exists? (.-msHidden js/document)) "msvisibilitychange"
-    (exists? (.-webkitHidden js/document)) "webkitvisibilitychange"
-    :else nil))
-
-(defn handle-visibility-change []
-  (rf/dispatch [::set-hidden-value (is-hidden?)]))
-
-(defn set-visibility-listener []
-   (.addEventListener js/document
-                      visibility-type
-                      handle-visibility-change
-                      false))
 
 (rf/reg-event-fx
  ::play-sound

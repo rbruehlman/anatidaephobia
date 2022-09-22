@@ -9,14 +9,14 @@
    [thagomizer.chat.components.messages :refer [messages]]
    [thagomizer.chat.components.typing :refer [typing-indicator]]
    [thagomizer.chat.events.sms :as sms-events]
+   [thagomizer.common.events.etc]
    [thagomizer.chat.components.input :refer [input-text-field]]
    [thagomizer.chat.components.camera.modal :refer [modal-background]]
    [thagomizer.chat.subs.camera.modal :as modal-subs]
    [thagomizer.chat.events.camera.modal :as modal-events]
-   [thagomizer.chat.events.visibility :as visibility-events]
-   [thagomizer.chat.events.bailing :as bailing-events]
    [thagomizer.common.components.utils :as c-utils]
-   [thagomizer.entry.subs.authentication :as auth-subs]))
+   [thagomizer.entry.subs.authentication :as auth-subs]
+   [thagomizer.chat.events.bailing :as bailing-events]))
 
 (defn get-client-rect [node]
   (let [r (.getBoundingClientRect node)]
@@ -31,10 +31,7 @@
   (reset! state (get-client-rect (rdom/dom-node this))))
 
 (defn chat-app []
-  (let [state (r/atom {})
-        keystrokes (r/atom {})]
-    
-    (visibility-events/set-visibility-listener)
+  (let [state (r/atom {})] 
 
     (r/create-class
      {:component-did-mount
@@ -42,9 +39,7 @@
         (.addEventListener js/window "resize" #(handler state this))
         (set! (.-onresize js/window)
               (r/force-update this))
-        (handler state this)
-        (.addEventListener js/window "keyup" #(bailing-events/handle-key-press % keystrokes))
-        (.addEventListener js/window "keydown" #(bailing-events/handle-key-press % keystrokes)))
+        (handler state this))
 
       :component-will-unmount
       (fn [this]

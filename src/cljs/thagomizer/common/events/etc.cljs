@@ -1,4 +1,4 @@
-(ns thagomizer.common.events
+(ns thagomizer.common.events.etc
   (:require
    [re-frame.core :as rf]
    [thagomizer.db :as db]))
