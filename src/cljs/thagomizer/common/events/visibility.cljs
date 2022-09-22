@@ -24,7 +24,7 @@
     :else nil))
 
 (defn is-mobile []
-  (f-utils/not-nil? (.match (.-userAgent js/navigator) #"(?i)Mozilla")))
+  (f-utils/not-nil? (.match (.-userAgent js/navigator) #"(?i)iPhone")))
 
 (defn handle-visibility-change []
   (rf/dispatch [::set-hidden-value (is-hidden?)]))
