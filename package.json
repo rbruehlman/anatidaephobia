@@ -33,7 +33,7 @@
     "bulma": "^0.9.0",
     "create-react-class": "~15.6.3",
     "moment": "^2.27.0",
-    "random-words": "^1.1.1",
+    "random-words": "^1.2.0",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "react-highlight.js": "1.0.7"
