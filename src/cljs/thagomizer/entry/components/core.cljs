@@ -49,5 +49,5 @@
        [receipt-app]
        (true? auth-send)[send-app]
        :else
-       [:<>
+       [:<> [:div "thagomizer"]
         [input-passcode-field]])]))}))
