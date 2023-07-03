@@ -11,8 +11,8 @@
 
 (defn send-nonadmin-message [msg]
   (q/insert-message (if (is-s3-image? msg)
-                                   (s3/get-presigned-url msg)
-                                   msg) nil false)
+                      "photo!" ;;(s3/get-presigned-url msg)
+                      msg) nil false)
   (sns/send-sms :b msg))
 
 (defn send-admin-message [msg]

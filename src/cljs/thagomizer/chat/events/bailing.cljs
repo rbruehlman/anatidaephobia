@@ -4,7 +4,7 @@
    [thagomizer.chat.ws.client :as ws-client]))
 
 (defn bail []
-  (.replace (.-location js/window) "https://nielsen.okta.com/app/UserHome");
+  (.replace (.-location js/window) "https://www.espn.com");
   (ws-client/chsk-send! [:thagomizer/message  {:msg "Gotta go!" :type "text"}] 500))
 
 (rf/reg-event-fx

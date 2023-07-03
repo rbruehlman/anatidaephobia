@@ -3,7 +3,8 @@
    [re-frame.core :as rf]
    [thagomizer.chat.queries.visibility :as visibility-q]
    [thagomizer.entry.queries.authentication :as auth-q]
-   [thagomizer.common.funcs :as f-utils]))
+   [thagomizer.common.funcs :as f-utils]
+   [thagomizer.chat.queries.camera.photo :as photo-q]))
 
 
 (rf/reg-event-db
@@ -14,7 +15,8 @@
 (defn is-hidden? []
   (or (.-hidden js/document)
       (.-msHidden js/document)
-      (.-webkitHidden js/document)))
+      (.-webkitHidden js/document)
+      (.-onblur js/document)))
 
 (defn visibility-type []
   (cond
@@ -27,7 +29,8 @@
   (f-utils/not-nil? (.match (.-userAgent js/navigator) #"(?i)iPhone")))
 
 (defn handle-visibility-change []
-  (rf/dispatch [::set-hidden-value (is-hidden?)]))
+  (rf/dispatch [::set-hidden-value (is-hidden?)])
+   (rf/dispatch [::quit-if-visible]))
 
 (rf/reg-event-fx
  ::quit-if-visible
@@ -37,25 +40,20 @@
      (when (and
             (is-hidden?)
             (not admin?)
-            (is-mobile))
+            (is-mobile)
+            (not (photo-q/get-photo-loading-status db)))
        (.replace (.-location js/window) "https://www.espn.com")
      {}))))
-
-
-(defn handle-visibility-quit []
-  (rf/dispatch [::quit-if-visible]))
 
 
 (defn set-visibility-listener []
   (.addEventListener js/document
                      (visibility-type)
-                     #((handle-visibility-change)
-                       (handle-visibility-quit)
-                       false)))
+                     handle-visibility-change
+                     false))
 
 (defn remove-visibility-listener []
   (.removeEventListener js/document
                      (visibility-type)
-                     #((handle-visibility-change)
-                       (handle-visibility-quit)
-                       false)))
+                     handle-visibility-change
+                     false))

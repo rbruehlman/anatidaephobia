@@ -5,3 +5,9 @@
 
 (defn get-text-field [db]
   (get-in db [:send :text-field]))
+
+(defn get-visibility [db]
+  (get-in db [:send :visible]))
+
+(defn set-visibility [db]
+   (update-in db [:send :visible] not))

@@ -7,3 +7,8 @@
  ::text-field
  (fn [db]
    (q/get-text-field db)))
+
+(rf/reg-sub
+ ::visibility
+ (fn [db]
+   (q/get-visibility db)))

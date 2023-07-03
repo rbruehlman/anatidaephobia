@@ -4,7 +4,6 @@
    [reagent.dom :as rdom]
    [re-frame.core :as rf]
    [thagomizer.chat.components.accents :refer [online-users]]
-   [thagomizer.common.components.accents :refer [header]]
    [thagomizer.common.components.input :refer [button]]
    [thagomizer.chat.components.messages :refer [messages]]
    [thagomizer.chat.components.typing :refer [typing-indicator]]
@@ -31,7 +30,7 @@
   (reset! state (get-client-rect (rdom/dom-node this))))
 
 (defn chat-app []
-  (let [state (r/atom {})] 
+  (let [state (r/atom {})]
 
     (r/create-class
      {:component-did-mount
@@ -56,7 +55,6 @@
                                                :align-items "stretch"
                                                :height "90vh"
                                                :width "100%"} c-utils/center-css)}
-           [header]
            [messages]
            (when visible-camera-modal
              [modal-background state])

@@ -1,18 +1,46 @@
 (ns thagomizer.send.components
   (:require
    [thagomizer.common.components.input :refer [button target-value]]
-   [thagomizer.common.components.accents :refer [header]]
    [thagomizer.send.events :as events]
    [thagomizer.send.subs :as subs]
    [re-frame.core :as rf]
    [reagent.core :as r]
-   [thagomizer.common.components.utils :as c-utils]))
+   [thagomizer.common.components.utils :as c-utils]
+   [thagomizer.receipt.components :as receipt-components]
+   [thagomizer.receipt.subs :as receipt-subs]
+   [thagomizer.receipt.events :as receipt-events]
+   [thagomizer.entry.subs.authentication :as auth-subs]))
 
 
 (defn on-text-field-value-change
   "Sets the text field with the value submitted in the event"
   [e]
   (rf/dispatch [::events/update-text-field (target-value e)]))
+
+(defn last-message
+  "Component to show the last message"
+  []
+  (let [last-msg (last @(rf/subscribe [::receipt-subs/messages]))]
+    (when (not (nil? last-msg))
+      [receipt-components/message-container-div last-msg]))
+  )
+
+(defn- show-message []
+  (
+   (rf/dispatch [::events/set-visibility])
+   (rf/dispatch [::receipt-events/get-messages 1])
+   )
+  )
+
+(defn last-message-div []
+  (let [admin? @(rf/subscribe [::auth-subs/admin-status])
+        visible? @(rf/subscribe[::subs/visibility])]
+    (when (not admin?)
+      (if visible?
+        [button  nil "last-msg" "Show message?" :elm-overrides
+         {:visible (str visible?)
+          :onClick show-message}]
+        [last-message]))))
 
 (defn input-text-field
   "Component for the input text field"
@@ -57,11 +85,12 @@
 
 (defn send-app []
   (r/create-class
-     {:component-did-mount #(rf/dispatch [::events/load-draft])
+     {
    :reagent-render
       (fn []
   [:<>
-   [header]
+   [:div {:style {:margin "10px auto"}}
+    [last-message-div]]
    [:div {:key "input-text-field"}
     [input-text-field]]
    [:div {:style {:margin "10px auto"}

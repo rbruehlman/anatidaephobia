@@ -20,7 +20,8 @@
                                          :loading nil}
                                  :modal false}}
                  :send {:authenticated nil
-                        :text-field ""}
+                        :text-field ""
+                        :visible true}
                  :receipt  {:authenticated nil
                             :messages {:data []
                                        :error nil}}})

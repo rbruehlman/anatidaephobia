@@ -6,7 +6,6 @@
             [thagomizer.common.funcs :as f-utils]
             [thagomizer.common.components.utils :as c-utils]
             [thagomizer.entry.subs.authentication :as auth-subs]
-            [thagomizer.common.components.accents :refer [header]]
             [clojure.string :as str]))
 
 (defn image-div [timestamp text]
@@ -21,29 +20,27 @@
                 :font-size 14}
         :key (str timestamp "-receipt-p" i)} p])))
 
-(defn all-message-div [messages]
-  (for [msg messages]
-    (let [timestamp (:timestamp msg)
-          text (:message msg)]
-      [:div.rows {:key (str timestamp "-receipt-row")
-                  :style {:vertical-align "bottom"
-                          :padding-bottom "10px"}}
-       [:div {:key (str timestamp "-receipt-timestamp")
-              :style {:margin-top "10px"}}
-        [:span {:class "is-2"
-                :key (str timestamp "-receipt-timestamp-sp")
-                :style {:font-size 12
-                        :text-align "left"
-                        :color "blue"}}
-         (f-utils/convert-to-human-time timestamp "dddd h:mm A, YYYY-MM-DD")]]
+(defn message-container-div [msg]
+  (let [timestamp (:timestamp msg)
+        text (:message msg)]
+    [:div.rows {:key (str timestamp "-receipt-row")
+                :style {:vertical-align "bottom"
+                        :padding-bottom "10px"}}
+     [:div {:key (str timestamp "-receipt-timestamp")
+            :style {:margin-top "10px"}}
+      [:span {:class "is-2"
+              :key (str timestamp "-receipt-timestamp-sp")
+              :style {:font-size 12
+                      :text-align "left"
+                      :color "blue"}}
+       (f-utils/convert-to-human-time timestamp "dddd h:mm A, YYYY-MM-DD")]]
 
-       [:div.row {:class "is-8"
-                  :style {:text-align "left"}
-                  :key (str timestamp "-receipt-user")}
-        (if (str/includes? text "https://thagomizer.s3.amazonaws.com/")
-          (image-div timestamp text)
-          (message-div timestamp text)
-          )]])))
+     [:div.row {:class "is-8"
+                :style {:text-align "left"}
+                :key (str timestamp "-receipt-user")}
+      (if (str/includes? text "https://thagomizer.s3.amazonaws.com/")
+        (image-div timestamp text)
+        (message-div timestamp text))]]))
 
 (def dark-blue "#00008b")
 
@@ -83,11 +80,13 @@
          (when-not (empty? new-msgs)
            [:div
             (divider "new")
-            (all-message-div new-msgs)])
+            (for [msg new-msgs]
+              [message-container-div msg])])
          (when-not (empty? old-msgs)
            [:div
             (divider "read")
-            (all-message-div old-msgs)])]))}))
+            (for [msg old-msgs]
+              [message-container-div msg])])]))}))
 
 (defn paginate-button [key max-page-count current-page page-num next-page]
   [:button {:key (if (integer? next-page) next-page key)
@@ -136,6 +135,5 @@
 
     :reagent-render
     (fn []
-      [:<> [header]
       [:div [messages]
-       [paginate-buttons]]])}))
+       [paginate-buttons]])}))

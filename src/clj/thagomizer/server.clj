@@ -22,8 +22,6 @@
   (POST "/chsk" ring-req    (ws/ring-ajax-post ring-req))
   (GET "/messages" ring-req (msg-handler/display-message-handler ring-req))
   (POST "/message" ring-req (msg-handler/new-message-handler ring-req))
-  (GET "/draft" ring-req   (msg-handler/get-draft-handler ring-req))
-  (POST "/draft" ring-req   (msg-handler/save-draft-handler ring-req))
   (POST "/sms" ring-req     (sns-handler/sns-handler ring-req))
   (POST "/visits" ring-req  (visit-handler/visit-handler ring-req))
   (POST "/images" ring-req  (image-handler/image-handler ring-req))
